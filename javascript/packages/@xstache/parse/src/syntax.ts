@@ -7,8 +7,8 @@ export function isIdentifier(char: string): boolean {
 }
 
 export function identifier(reader: StringReader): IdentifierNode | undefined {
-    const name = reader.readWhile(isIdentifier);
-    return name !== "" ? { type: "IdentifierNode", name } : undefined;
+    const value = reader.readWhile(isIdentifier);
+    return value !== "" ? { type: "IdentifierNode", value } : undefined;
 }
 
 export function isWhitespace(char: string): boolean {

@@ -18,16 +18,16 @@ test("parse", () => {
               },
               "closing": {
                 "name": {
-                  "name": "span",
                   "type": "IdentifierNode",
+                  "value": "span",
                 },
                 "type": "ElementClosingNode",
               },
               "opening": {
                 "attributes": [],
                 "name": {
-                  "name": "span",
                   "type": "IdentifierNode",
+                  "value": "span",
                 },
                 "selfClosing": false,
                 "type": "ElementOpeningNode",
@@ -37,16 +37,16 @@ test("parse", () => {
           ],
           "closing": {
             "name": {
-              "name": "div",
               "type": "IdentifierNode",
+              "value": "div",
             },
             "type": "ElementClosingNode",
           },
           "opening": {
             "attributes": [],
             "name": {
-              "name": "div",
               "type": "IdentifierNode",
+              "value": "div",
             },
             "selfClosing": false,
             "type": "ElementOpeningNode",
@@ -94,16 +94,16 @@ test("parse", () => {
           ],
           "closing": {
             "name": {
-              "name": "div",
               "type": "IdentifierNode",
+              "value": "div",
             },
             "type": "ElementClosingNode",
           },
           "opening": {
             "attributes": [],
             "name": {
-              "name": "div",
               "type": "IdentifierNode",
+              "value": "div",
             },
             "selfClosing": false,
             "type": "ElementOpeningNode",
@@ -133,8 +133,8 @@ test("parse", () => {
             },
             "closing": {
               "name": {
-                "name": "foo",
                 "type": "IdentifierNode",
+                "value": "foo",
               },
               "type": "ElementClosingNode",
             },
@@ -142,8 +142,8 @@ test("parse", () => {
               "attributes": [
                 {
                   "name": {
-                    "name": "bar",
                     "type": "IdentifierNode",
+                    "value": "bar",
                   },
                   "type": "AttributeNode",
                   "value": {
@@ -158,16 +158,16 @@ test("parse", () => {
                 },
                 {
                   "name": {
-                    "name": "boo",
                     "type": "IdentifierNode",
+                    "value": "boo",
                   },
                   "type": "AttributeNode",
                   "value": undefined,
                 },
               ],
               "name": {
-                "name": "foo",
                 "type": "IdentifierNode",
+                "value": "foo",
               },
               "selfClosing": false,
               "type": "ElementOpeningNode",
@@ -181,16 +181,16 @@ test("parse", () => {
               "attributes": [
                 {
                   "name": {
-                    "name": "disabled",
                     "type": "IdentifierNode",
+                    "value": "disabled",
                   },
                   "type": "AttributeNode",
                   "value": undefined,
                 },
               ],
               "name": {
-                "name": "input",
                 "type": "IdentifierNode",
+                "value": "input",
               },
               "selfClosing": true,
               "type": "ElementOpeningNode",

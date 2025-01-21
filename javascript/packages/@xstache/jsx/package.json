@@ -1,0 +1,29 @@
+{
+    "name": "@xstache/jsx",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "rimraf dist && tsc",
+        "test": "vitest --run"
+    },
+    "devDependencies": {
+        "@xstache/parse": "workspace:*",
+        "rimraf": "^6",
+        "source-map": "^0",
+        "typescript": "^5",
+        "vitest": "^3"
+    },
+    "peerDependencies": {
+        "@xstache/ast": "workspace:*"
+    },
+    "dependencies": {
+        "@babel/types": "^7",
+        "astring": "^1"
+    }
+}

@@ -46,7 +46,7 @@ export interface AttributeNode {
 
 export interface IdentifierNode {
     type: "IdentifierNode";
-    name: string;
+    value: string;
 }
 
 export interface TextNode {
