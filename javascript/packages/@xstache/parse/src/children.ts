@@ -47,34 +47,26 @@ function child(reader: StringReader): ast.Child | undefined {
                 children: undefined,
             };
         } else {
-            return element(reader, opening);
+            const ownChildren = children(reader);
+
+            const closing = closingElement(reader);
+            if (!closing) {
+                const pretty = JSON.stringify(opening);
+                throw new Error(
+                    `Missing closing element for ${pretty} at ${reader.location}`,
+                );
+            }
+
+            return {
+                type: "ElementNode",
+                opening,
+                closing,
+                children: ownChildren,
+            };
         }
     }
 
     return undefined;
-}
-
-function element(
-    reader: StringReader,
-    opening: ast.ElementOpeningNode,
-): ast.ElementNode {
-    const ownChildren = children(reader);
-
-    const closing = closingElement(reader);
-    if (!closing) {
-        console.log({ ownChildren });
-        const pretty = JSON.stringify(opening);
-        throw new Error(
-            `Missing closing element for ${pretty} at ${reader.location}`,
-        );
-    }
-
-    return {
-        type: "ElementNode",
-        opening,
-        closing,
-        children: ownChildren,
-    };
 }
 
 function openingElement(
