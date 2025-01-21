@@ -1,0 +1,18 @@
+{
+    "name": "@xstache/ast",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "rimraf dist && tsc"
+    },
+    "devDependencies": {
+        "rimraf": "^6",
+        "typescript": "^5"
+    }
+}

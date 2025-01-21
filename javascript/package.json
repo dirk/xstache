@@ -1,0 +1,13 @@
+{
+    "name": "root",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "build": "pnpm --recursive run build",
+        "prettier": "prettier --write 'packages/@xstache/*/*.json' 'packages/@xstache/*/src/**.ts'",
+        "test": "pnpm --recursive run test"
+    },
+    "devDependencies": {
+        "prettier": "^3"
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "module": "nodenext",
+        "target": "es6"
+    }
+}
