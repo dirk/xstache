@@ -23,6 +23,7 @@ test("parse", () => {
                 "type": "ElementClosingNode",
               },
               "opening": {
+                "attributes": [],
                 "name": {
                   "name": "span",
                   "type": "IdentifierNode",
@@ -41,6 +42,7 @@ test("parse", () => {
             "type": "ElementClosingNode",
           },
           "opening": {
+            "attributes": [],
             "name": {
               "name": "div",
               "type": "IdentifierNode",
@@ -97,6 +99,7 @@ test("parse", () => {
             "type": "ElementClosingNode",
           },
           "opening": {
+            "attributes": [],
             "name": {
               "name": "div",
               "type": "IdentifierNode",

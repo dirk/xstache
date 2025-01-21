@@ -24,13 +24,25 @@ export interface ElementNode {
 
 export interface ElementOpeningNode {
     type: "ElementOpeningNode";
-    name: IdentifierNode | VariableNode;
+    name: IdentifierNode;
+    attributes: Attribute[];
     selfClosing: boolean;
 }
 
 export interface ElementClosingNode {
     type: "ElementClosingNode";
-    name: IdentifierNode | VariableNode;
+    name: IdentifierNode;
+}
+
+export type Attribute =
+    | AttributeNode
+    // TODO: AttributedSectionNode
+    // TODO: InvertedAttributeSectionNode
+
+export interface AttributeNode {
+    type: "AttributeNode";
+    name: IdentifierNode;
+    value: VariableNode | undefined;
 }
 
 export interface IdentifierNode {

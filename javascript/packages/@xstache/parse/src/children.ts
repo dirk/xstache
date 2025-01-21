@@ -1,7 +1,7 @@
 import * as ast from "@xstache/ast";
 
 import type StringReader from "./reader.js";
-import { isWhitespace } from "./syntax.js";
+import { isIdentifier, isWhitespace } from "./syntax.js";
 import variable from "./variable.js";
 
 export default function children(
@@ -130,6 +130,7 @@ function elementTag(
         return {
             type,
             name,
+            attributes: [],
             selfClosing,
         };
     } else {
@@ -138,10 +139,6 @@ function elementTag(
             name,
         };
     }
-}
-
-function isIdentifier(char: string): boolean {
-    return /[a-zA-Z-]/.test(char);
 }
 
 function anyText(reader: StringReader): ast.TextNode | undefined {
