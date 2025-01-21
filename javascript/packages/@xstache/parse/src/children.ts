@@ -13,11 +13,11 @@ export default function children(
     while (!reader.eof()) {
         let child: ast.Child;
 
-        const text = anyText(reader);
-        if (text) {
-            child = text;
+        const ownText = text(reader);
+        if (ownText) {
+            child = ownText;
         } else {
-            // This must be after `anyText()`; that way we will now be either on a non-text,
+            // This must be after `text()`; that way we will now be either on a non-text,
             // non-whitespace character or at the end of input.
             const char = reader.peek();
             if (char === undefined) {
@@ -107,19 +107,24 @@ function elementTag(
     }
 
     const attributes: ast.Attribute[] = [];
-    while (!reader.eof()) {
-        const separator = whitespace(reader);
-        // There must be some sort of whitespace (newline, space, tab, etc.) after the element
-        // name/preceding attribute.
-        if (separator === "") {
-            break;
-        }
+    if (type === "ElementOpeningNode") {
+        while (!reader.eof()) {
+            const separator = whitespace(reader);
+            // There must be some sort of whitespace (newline, space, tab, etc.) after the element
+            // name/preceding attribute.
+            if (separator === "") {
+                break;
+            }
 
-        const ownAttribute = attribute(reader);
-        if (!ownAttribute) {
-            break;
+            const ownAttribute = attribute(reader);
+            if (!ownAttribute) {
+                break;
+            }
+            attributes.push(ownAttribute);
         }
-        attributes.push(ownAttribute);
+    } else {
+        // Still consume whitespace after the tag name.
+        whitespace(reader);
     }
 
     let selfClosing = false;
@@ -134,7 +139,7 @@ function elementTag(
 
     char = reader.peek();
     if (char !== ">") {
-        throw new Error(`Expected '>', got '${char}'`);
+        throw new Error(`Expected '>', got '${char}' at ${reader.location}`);
     }
     reader.read();
 
@@ -153,7 +158,7 @@ function elementTag(
     }
 }
 
-function anyText(reader: StringReader): ast.TextNode | undefined {
+function text(reader: StringReader): ast.TextNode | undefined {
     let containsText = false;
     const value = reader.readWhile((char) => {
         if (isWhitespace(char)) {

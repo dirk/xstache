@@ -1,4 +1,5 @@
 import { expect, test } from "vitest";
+
 import parse from "./index.js";
 
 test("parse", () => {
