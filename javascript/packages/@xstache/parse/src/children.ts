@@ -10,31 +10,29 @@ export default function children(
     let ownChildren: ast.Children = undefined;
 
     while (!reader.eof()) {
-        let child: ast.Child = undefined;
+        let child: ast.Child;
 
         const text = anyText(reader);
-        // This must be after `anyText()` so that should now be either on a non-text,
-        // non-whitespace character or at the end of input.
-        const char = reader.peek();
         if (text) {
             child = text;
-        } else if (char === "<") {
-            const node = elementTag(reader);
-            if (node.type === "ElementClosingNode") {
-                return [ownChildren, node];
-            } else {
-                child = element(reader, node);
-            }
-        } else if (char === "{") {
-            child = variable(reader);
-        } else if (char === undefined) {
-            break; // At end-of-input.
         } else {
-            throw new Error(`Unexpected 2: '${char}'`);
-        }
-
-        if (!child) {
-            continue;
+            // This must be after `anyText()`; that way we will now be either on a non-text,
+            // non-whitespace character or at the end of input.
+            const char = reader.peek();
+            if (char === undefined) {
+                break; // At the end of input.
+            } else if (char === "<") {
+                const node = elementTag(reader);
+                if (node.type === "ElementClosingNode") {
+                    return [ownChildren, node];
+                } else {
+                    child = element(reader, node);
+                }
+            } else if (char === "{") {
+                child = variable(reader);
+            } else {
+                throw new Error(`Unexpected: '${char}'`);
+            }
         }
 
         if (!ownChildren) {
