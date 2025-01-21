@@ -34,10 +34,9 @@ export interface ElementClosingNode {
     name: IdentifierNode;
 }
 
-export type Attribute =
-    | AttributeNode
-    // TODO: AttributedSectionNode
-    // TODO: InvertedAttributeSectionNode
+export type Attribute = AttributeNode;
+// TODO: AttributedSectionNode
+// TODO: InvertedAttributeSectionNode
 
 export interface AttributeNode {
     type: "AttributeNode";

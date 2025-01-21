@@ -1,21 +1,48 @@
+export class Location {
+    public constructor(
+        public readonly line: number,
+        public readonly column: number,
+    ) {}
+
+    public toString(): string {
+        return `${this.line}:${this.column}`;
+    }
+}
+
 export default class StringReader {
-    private index = 0;
+    #index = 0;
+    private line = 1;
+    private column = 1;
 
     constructor(private readonly input: string) {}
+
+    public get index(): number {
+        return this.#index;
+    }
+
+    public get location(): Location {
+        return new Location(this.line, this.column);
+    }
 
     public peek(): string | undefined {
         if (this.eof()) {
             return undefined;
         }
-        return this.input[this.index];
+        return this.input[this.#index];
     }
 
     public read(): string | undefined {
         if (this.eof()) {
             return undefined;
         }
-        const char = this.input[this.index];
-        this.index++;
+        const char = this.input[this.#index];
+        if (char === "\n") {
+            this.line++;
+            this.column = 1;
+        } else {
+            this.column++;
+        }
+        this.#index++;
         return char;
     }
 
@@ -28,6 +55,6 @@ export default class StringReader {
     }
 
     public eof(): boolean {
-        return this.index >= this.input.length;
+        return this.#index >= this.input.length;
     }
 }

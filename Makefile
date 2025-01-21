@@ -1,6 +1,6 @@
 .PHONY: build dependencies format
 
-all: format build
+all: format test
 
 dependencies:
 	cd javascript && pnpm install

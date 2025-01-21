@@ -1,8 +1,9 @@
 import * as ast from "@xstache/ast";
 
 import type StringReader from "./reader.js";
-import { isIdentifier, isWhitespace } from "./syntax.js";
+import { identifier, isWhitespace, whitespace } from "./syntax.js";
 import variable from "./variable.js";
+import attribute from "./attribute.js";
 
 export default function children(
     reader: StringReader,
@@ -100,29 +101,40 @@ function elementTag(
         reader.read();
     }
 
-    let name: ast.IdentifierNode | ast.VariableNode;
-    char = reader.peek();
-    if (char === "{") {
-        throw new Error("Variable element names not yet implemented");
-    } else if (isIdentifier(char)) {
-        name = {
-            type: "IdentifierNode",
-            name: reader.readWhile(isIdentifier),
-        };
-    } else {
-        throw new Error(`Unexpected: '${char}'`);
+    const name = identifier(reader);
+    if (!name) {
+        throw new Error("Expected an identifier for the element name");
+    }
+
+    const attributes: ast.Attribute[] = [];
+    while (!reader.eof()) {
+        const separator = whitespace(reader);
+        // There must be some sort of whitespace (newline, space, tab, etc.) after the element
+        // name/preceding attribute.
+        if (separator === "") {
+            break;
+        }
+
+        const ownAttribute = attribute(reader);
+        if (!ownAttribute) {
+            break;
+        }
+        attributes.push(ownAttribute);
     }
 
     let selfClosing = false;
+    char = reader.peek();
     if (char === "/") {
-        // TODO: Assert that this is an `ElementOpeningNode`.
+        if (type === "ElementClosingNode") {
+            throw new Error("Unexpected '/' in closing element tag");
+        }
         selfClosing = true;
         reader.read();
     }
 
     char = reader.peek();
     if (char !== ">") {
-        throw new Error("Expected '>'");
+        throw new Error(`Expected '>', got '${char}'`);
     }
     reader.read();
 
@@ -130,7 +142,7 @@ function elementTag(
         return {
             type,
             name,
-            attributes: [],
+            attributes,
             selfClosing,
         };
     } else {
