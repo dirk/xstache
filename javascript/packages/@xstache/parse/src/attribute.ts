@@ -13,10 +13,16 @@ export default function attribute(
     }
 
     let value: AttributeNode["value"] = undefined;
-    let char = reader.peek();
-    if (char === "=") {
+    if (reader.peek() === "=") {
         reader.read();
-        value = variable(reader);
+        const ownVariable = variable(reader);
+        if (ownVariable) {
+            value = ownVariable;
+        } else {
+            throw new Error(
+                `Expected variable, got '${reader.peek()}' at ${reader.location}`,
+            );
+        }
     }
 
     return {

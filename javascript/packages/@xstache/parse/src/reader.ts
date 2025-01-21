@@ -24,11 +24,13 @@ export default class StringReader {
         return new Location(this.line, this.column);
     }
 
-    public peek(): string | undefined {
+    public peek(count: number = 1): string | undefined {
         if (this.eof()) {
             return undefined;
         }
-        return this.input[this.#index];
+        return count <= 1
+            ? this.input[this.#index]
+            : this.input.slice(this.#index, this.#index + count);
     }
 
     public read(): string | undefined {

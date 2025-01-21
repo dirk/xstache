@@ -5,70 +5,69 @@ import { identifier, isWhitespace, whitespace } from "./syntax.js";
 import variable from "./variable.js";
 import attribute from "./attribute.js";
 
-export default function children(
-    reader: StringReader,
-): [ast.Children, ast.ElementClosingNode | undefined] {
+export default function children(reader: StringReader): ast.Children {
     let ownChildren: ast.Children = undefined;
 
-    while (!reader.eof()) {
-        let child: ast.Child;
-
-        const ownText = text(reader);
-        if (ownText) {
-            child = ownText;
-        } else {
-            // This must be after `text()`; that way we will now be either on a non-text,
-            // non-whitespace character or at the end of input.
-            const char = reader.peek();
-            if (char === undefined) {
-                break; // At the end of input.
-            } else if (char === "<") {
-                const node = elementTag(reader);
-                if (node.type === "ElementClosingNode") {
-                    return [ownChildren, node];
-                } else {
-                    child = element(reader, node);
-                }
-            } else if (char === "{") {
-                child = variable(reader);
-            } else {
-                throw new Error(`Unexpected: '${char}'`);
-            }
+    while (true) {
+        const ownChild = child(reader);
+        if (!ownChild) {
+            break;
         }
 
         if (!ownChildren) {
-            ownChildren = child;
+            ownChildren = ownChild;
         } else if (Array.isArray(ownChildren)) {
-            ownChildren.push(child);
+            ownChildren.push(ownChild);
         } else {
-            ownChildren = [ownChildren, child];
+            ownChildren = [ownChildren, ownChild];
         }
     }
 
-    return [ownChildren, undefined];
+    return ownChildren;
+}
+
+function child(reader: StringReader): ast.Child | undefined {
+    const ownText = text(reader);
+    if (ownText) {
+        return ownText;
+    }
+
+    const ownVariable = variable(reader);
+    if (ownVariable) {
+        return ownVariable;
+    }
+
+    const opening = openingElement(reader);
+    if (opening) {
+        if (opening.selfClosing) {
+            return {
+                type: "ElementNode",
+                opening,
+                closing: undefined,
+                children: undefined,
+            };
+        } else {
+            return element(reader, opening);
+        }
+    }
+
+    return undefined;
 }
 
 function element(
     reader: StringReader,
     opening: ast.ElementOpeningNode,
 ): ast.ElementNode {
-    if (opening.selfClosing) {
-        return {
-            type: "ElementNode",
-            opening,
-            closing: undefined,
-            children: undefined,
-        };
-    }
+    const ownChildren = children(reader);
 
-    const [ownChildren, closing] = children(reader);
+    const closing = closingElement(reader);
     if (!closing) {
+        console.log({ ownChildren });
+        const pretty = JSON.stringify(opening);
         throw new Error(
-            `Expected closing element for: ${JSON.stringify(opening, null, 4)}`,
+            `Missing closing element for ${pretty} at ${reader.location}`,
         );
     }
-
-    // TODO: Assert that the closing node matches the opening one.
 
     return {
         type: "ElementNode",
@@ -78,28 +77,14 @@ function element(
     };
 }
 
-/**
- * Parses the literal element tag. In other words: everything between the `<` and `>`, but without
- * any semantic meaning.
- *
- * Use `element()` to get a logically sound tree of balanaced elements and self-closing elements
- * (and errors if said tree can't be constructed).
- */
-function elementTag(
+function openingElement(
     reader: StringReader,
-): ast.ElementOpeningNode | ast.ElementClosingNode {
-    let char = reader.read();
-    if (char !== "<") {
-        throw new Error(`Expected '<', got '${char}'`);
+): ast.ElementOpeningNode | undefined {
+    const peek = reader.peek(2);
+    if (!peek || peek[0] !== "<" || peek === "</") {
+        return undefined;
     }
-
-    let type: (ast.ElementOpeningNode | ast.ElementClosingNode)["type"] =
-        "ElementOpeningNode";
-    char = reader.peek();
-    if (char === "/") {
-        type = "ElementClosingNode";
-        reader.read();
-    }
+    reader.read(); // Consume the '<'.
 
     const name = identifier(reader);
     if (!name) {
@@ -107,55 +92,66 @@ function elementTag(
     }
 
     const attributes: ast.Attribute[] = [];
-    if (type === "ElementOpeningNode") {
-        while (!reader.eof()) {
-            const separator = whitespace(reader);
-            // There must be some sort of whitespace (newline, space, tab, etc.) after the element
-            // name/preceding attribute.
-            if (separator === "") {
-                break;
-            }
-
-            const ownAttribute = attribute(reader);
-            if (!ownAttribute) {
-                break;
-            }
-            attributes.push(ownAttribute);
+    while (true) {
+        const separator = whitespace(reader);
+        // There must be some sort of whitespace (newline, space, tab, etc.) after the element
+        // name/preceding attribute.
+        if (separator === "") {
+            break;
         }
-    } else {
-        // Still consume whitespace after the tag name.
-        whitespace(reader);
+
+        const ownAttribute = attribute(reader);
+        if (!ownAttribute) {
+            break;
+        }
+        attributes.push(ownAttribute);
     }
 
     let selfClosing = false;
-    char = reader.peek();
-    if (char === "/") {
-        if (type === "ElementClosingNode") {
-            throw new Error("Unexpected '/' in closing element tag");
-        }
+    if (reader.peek() === "/") {
         selfClosing = true;
         reader.read();
     }
 
-    char = reader.peek();
+    const char = reader.peek();
     if (char !== ">") {
         throw new Error(`Expected '>', got '${char}' at ${reader.location}`);
     }
     reader.read();
 
-    if (type === "ElementOpeningNode") {
-        return {
-            type,
-            name,
-            attributes,
-            selfClosing,
-        };
-    } else {
-        return {
-            type,
-            name,
-        };
+    return {
+        type: "ElementOpeningNode",
+        name,
+        attributes,
+        selfClosing,
+    };
+}
+
+function closingElement(
+    reader: StringReader,
+): ast.ElementClosingNode | undefined {
+    if (reader.peek(2) !== "</") {
+        return undefined;
     }
+    reader.read(); // Consume the '<',
+    reader.read(); // and the '/'.
+
+    const name = identifier(reader);
+    if (!name) {
+        throw new Error("Expected an identifier for the element name");
+    }
+
+    whitespace(reader);
+    const char = reader.peek();
+    if (char !== ">") {
+        throw new Error(`Expected '>', got '${char}' at ${reader.location}`);
+    }
+    reader.read();
+
+    return {
+        type: "ElementClosingNode",
+        name,
+    };
 }
 
 function text(reader: StringReader): ast.TextNode | undefined {

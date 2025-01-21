@@ -3,11 +3,13 @@ import * as ast from "@xstache/ast";
 import type StringReader from "./reader.js";
 import { whitespace } from "./syntax.js";
 
-export default function variable(reader: StringReader): ast.VariableNode {
-    let char = reader.read();
-    if (char !== "{") {
-        throw new Error(`Expected '{', got '${char}'`);
+export default function variable(
+    reader: StringReader,
+): ast.VariableNode | undefined {
+    if (reader.peek() !== "{") {
+        return undefined;
     }
+    reader.read(); // Consume the '{'.
 
     whitespace(reader);
     let head = key(reader);
@@ -32,7 +34,7 @@ export default function variable(reader: StringReader): ast.VariableNode {
         }
     }
 
-    char = reader.read();
+    const char = reader.read();
     if (char !== "}") {
         throw new Error(`Expected '}', got '${char}'`);
     }

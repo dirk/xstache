@@ -6,12 +6,7 @@ import StringReader from "./reader.js";
 export default function parse(source: string): ast.NodeList {
     const reader = new StringReader(source);
 
-    const [ownChildren, closing] = children(reader);
-    if (closing) {
-        throw new Error(
-            `Unexpected closing element: ${JSON.stringify(closing, null, 4)}`,
-        );
-    }
+    const ownChildren = children(reader);
 
     return {
         type: "NodeList",
