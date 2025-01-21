@@ -29,6 +29,9 @@ importers:
       '@xstache/ast':
         specifier: workspace:*
         version: link:../ast
+      '@xstache/jsx-runtime':
+        specifier: workspace:*
+        version: link:../jsx-runtime
       astring:
         specifier: ^1
         version: 1.9.0
@@ -48,6 +51,15 @@ importers:
       vitest:
         specifier: ^3
         version: 3.0.2(@types/node@22.10.7)
+
+  packages/@xstache/jsx-runtime:
+    devDependencies:
+      rimraf:
+        specifier: ^6
+        version: 6.0.1
+      typescript:
+        specifier: ^5
+        version: 5.7.3
 
   packages/@xstache/parse:
     dependencies:

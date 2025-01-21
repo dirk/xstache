@@ -20,7 +20,8 @@
         "vitest": "^3"
     },
     "peerDependencies": {
-        "@xstache/ast": "workspace:*"
+        "@xstache/ast": "workspace:*",
+        "@xstache/jsx-runtime": "workspace:*"
     },
     "dependencies": {
         "@babel/types": "^7",

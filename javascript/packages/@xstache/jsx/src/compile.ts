@@ -1,15 +1,45 @@
 import * as t from "@babel/types";
-import type { Child, ElementNode, NodeList } from "@xstache/ast";
-import { generate, GENERATOR } from "astring";
+import type {
+    Child,
+    Children,
+    ElementNode,
+    NodeList,
+    TextNode,
+    VariableNode,
+} from "@xstache/ast";
+import { generate, GENERATOR, Options } from "astring";
 
 export default class Compiler {
-    constructor(private readonly pretty: boolean = false) {}
+    public readonly contextName = "c";
+    public readonly runtimeName = "r";
 
-    public compile(nodeList: NodeList) {
-        const expr = this.nodeListExpr(nodeList);
+    constructor(public readonly pretty: boolean = false) {}
+
+    public compileToFunction(nodeList: NodeList) {
+        const body = this.renderToString(
+            t.returnStatement(this.children(nodeList.children)),
+        );
+        return new Function(this.runtimeName, this.contextName, body);
+    }
+
+    public compileToString(nodeList: NodeList) {
+        const xs = t.functionExpression(
+            undefined,
+            [t.identifier(this.runtimeName), t.identifier(this.contextName)],
+            t.blockStatement([
+                t.returnStatement(this.children(nodeList.children)),
+            ]),
+        );
+        const codeObject = t.objectExpression([
+            t.objectProperty(t.identifier("xs"), xs),
+        ]);
+        return this.renderToString(codeObject);
+    }
+
+    renderToString(node: t.Node) {
         const customGenerator = Object.assign({}, GENERATOR, {
             ObjectProperty(node, state) {
-                GENERATOR.Property(
+                customGenerator.Property(
                     {
                         kind: "init",
                         ...node,
@@ -18,65 +48,112 @@ export default class Compiler {
                 );
             },
             StringLiteral(node, state) {
-                GENERATOR.Literal(node, state);
+                customGenerator.Literal(node, state);
             },
         });
-        return generate(expr, { generator: customGenerator });
+        const options: Options = { generator: customGenerator };
+        if (!this.pretty) {
+            options.indent = "";
+            options.lineEnd = "";
+        }
+        return generate(node, options);
     }
 
-    nodeListExpr(nodeList: NodeList) {
-        let children: t.Expression | undefined = undefined;
-        if (Array.isArray(nodeList.children)) {
-            children = t.arrayExpression(
-                nodeList.children.map((child) => this.childExpr(child!)),
-            );
-        } else if (nodeList.children) {
-            children = this.childExpr(nodeList.children);
-        }
-
-        let options: t.ObjectExpression | null = null;
-        if (children) {
-            options = t.objectExpression([
-                t.objectProperty(t.identifier("children"), children),
+    nodeList(nodeList: NodeList): t.Expression {
+        const children = this.children(nodeList.children);
+        if (t.isArrayExpression(children)) {
+            return t.callExpression(this.jsx(), [
+                this.fragment(),
+                t.objectExpression([
+                    t.objectProperty(t.identifier("children"), children),
+                ]),
             ]);
         }
-
-        const args: t.Expression[] = [this.fragmentExpr()];
-        if (options) {
-            args.push(options);
-        }
-
-        return t.callExpression(
-            t.memberExpression(t.identifier("r"), t.identifier("jsx")),
-            args,
-        );
+        return children;
     }
 
-    childExpr(child: NonNullable<Child>): t.Expression {
-        if (child.type === "ElementNode") {
-            return this.elementExpr(child);
+    children(children: Children): t.Expression {
+        if (Array.isArray(children)) {
+            return t.arrayExpression(
+                children.map((child) => this.child(child)),
+            );
+        }
+        return this.child(children);
+    }
+
+    child(child: Child): t.Expression {
+        if (child === null) {
+            return t.nullLiteral();
+        } else if (child === undefined) {
+            return { type: "UndefinedLiteral" } as unknown as t.NullLiteral;
+        } else if (child.type === "ElementNode") {
+            return this.element(child);
+        } else if (child.type === "TextNode") {
+            return this.text(child);
+        } else if (child.type === "VariableNode") {
+            return this.variable(child);
         }
         throw new Error(`Unreachable 4: ${child?.type}`);
     }
 
-    elementExpr(element: ElementNode) {
+    element(element: ElementNode) {
         const { opening } = element;
-        const args = [t.stringLiteral(opening.name.value)];
-        // if (attributes) {
-        //     args.push(t.objectExpression(
-        //         attributes.map((attr) => this.attributeExpr(attr)),
-        //     ));
-        // }
-        // if (children) {
-        //     args.push(this.nodeListExpr(children));
-        // }
+        const props: t.ObjectProperty[] = [];
+        for (const attribute of opening.attributes) {
+            if (attribute.value) {
+                props.push(
+                    t.objectProperty(
+                        t.stringLiteral(attribute.name.value),
+                        this.child(attribute.value),
+                    ),
+                );
+            } else {
+                props.push(
+                    t.objectProperty(
+                        t.stringLiteral(attribute.name.value),
+                        t.booleanLiteral(true),
+                    ),
+                );
+            }
+        }
+        if (element.children) {
+            props.push(
+                t.objectProperty(
+                    t.stringLiteral("children"),
+                    this.children(element.children),
+                ),
+            );
+        }
+        return t.callExpression(this.jsx(), [
+            t.stringLiteral(opening.name.value),
+            t.objectExpression(props),
+        ]);
+    }
+
+    variable(variable: VariableNode) {
         return t.callExpression(
-            t.memberExpression(t.identifier("r"), t.identifier("jsx")),
-            args,
+            t.memberExpression(this.context(), t.identifier("v")),
+            variable.key.map((key) => t.stringLiteral(key.value)),
         );
     }
 
-    fragmentExpr() {
-        return t.memberExpression(t.identifier("r"), t.identifier("Fragment"));
+    text(text: TextNode) {
+        return t.stringLiteral(text.raw);
+    }
+
+    jsx() {
+        return t.memberExpression(this.runtime(), t.identifier("jsx"));
+    }
+
+    fragment() {
+        return t.memberExpression(this.runtime(), t.identifier("Fragment"));
+    }
+
+    context() {
+        return t.identifier(this.contextName);
+    }
+
+    runtime() {
+        return t.identifier(this.runtimeName);
     }
 }
