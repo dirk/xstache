@@ -53,4 +53,60 @@ test("parse", () => {
         "type": "NodeList",
       }
     `);
+
+    expect(
+        parse(`
+      <div>
+        hello {user.name}
+        {message}
+      </div>
+    `),
+    ).toMatchInlineSnapshot(`
+      {
+        "children": {
+          "children": [
+            {
+              "raw": "
+              hello ",
+              "type": "TextNode",
+            },
+            {
+              "key": [
+                {
+                  "type": "KeyNode",
+                  "value": "user.name",
+                },
+              ],
+              "type": "VariableNode",
+            },
+            {
+              "key": [
+                {
+                  "type": "KeyNode",
+                  "value": "message",
+                },
+              ],
+              "type": "VariableNode",
+            },
+          ],
+          "closing": {
+            "name": {
+              "name": "div",
+              "type": "IdentifierNode",
+            },
+            "type": "ElementClosingNode",
+          },
+          "opening": {
+            "name": {
+              "name": "div",
+              "type": "IdentifierNode",
+            },
+            "selfClosing": false,
+            "type": "ElementOpeningNode",
+          },
+          "type": "ElementNode",
+        },
+        "type": "NodeList",
+      }
+    `);
 });

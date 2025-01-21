@@ -45,7 +45,12 @@ export interface TextNode {
 
 export interface VariableNode {
     type: "VariableNode";
-    raw: string;
+    key: KeyNode[];
+}
+
+export interface KeyNode {
+    type: "KeyNode";
+    value: string;
 }
 
 export interface SectionNode {
