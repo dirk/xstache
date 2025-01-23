@@ -14,6 +14,7 @@
     },
     "devDependencies": {
         "@xstache/parse": "workspace:*",
+        "react": "^19",
         "rimraf": "^6",
         "source-map": "^0",
         "typescript": "^5",
