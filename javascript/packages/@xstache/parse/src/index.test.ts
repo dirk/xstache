@@ -77,7 +77,11 @@ test("parse", () => {
               "key": [
                 {
                   "type": "KeyNode",
-                  "value": "user.name",
+                  "value": "user",
+                },
+                {
+                  "type": "KeyNode",
+                  "value": "name",
                 },
               ],
               "type": "VariableNode",

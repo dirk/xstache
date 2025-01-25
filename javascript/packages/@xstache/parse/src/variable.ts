@@ -1,37 +1,28 @@
 import * as ast from "@xstache/ast";
 
+import key from "./key.js";
 import type StringReader from "./reader.js";
 import { whitespace } from "./syntax.js";
 
 export default function variable(
     reader: StringReader,
 ): ast.VariableNode | undefined {
-    if (reader.peek() !== "{") {
+    const peek = reader.peek(2);
+    if (
+        !peek ||
+        peek[0] !== "{" ||
+        peek === "{#" ||
+        peek === "{^" ||
+        peek === "{/"
+    ) {
         return undefined;
     }
     reader.read(); // Consume the '{'.
 
     whitespace(reader);
-    let head = key(reader);
-    if (!head) {
-        throw new Error(`Unexpected character: '${reader.peek()}'`);
-    }
-
-    let keyComponents = [head];
-    while (true) {
-        whitespace(reader);
-        const char = reader.peek();
-        if (char === ".") {
-            reader.read();
-            whitespace(reader);
-            const next = key(reader);
-            if (!next) {
-                throw new Error(`Unexpected character: '${reader.peek()}'`);
-            }
-            keyComponents.push(next);
-        } else {
-            break;
-        }
+    const ownKey = key(reader);
+    if (!ownKey) {
+        throw new Error(`Expected key, got '${reader.peek()}'`);
     }
 
     const char = reader.read();
@@ -41,17 +32,6 @@ export default function variable(
 
     return {
         type: "VariableNode",
-        key: keyComponents,
-    };
-}
-
-function key(reader: StringReader): ast.KeyNode | undefined {
-    const value = reader.readWhile((char) => !/[\s}]/.test(char));
-    if (value === "") {
-        return undefined;
-    }
-    return {
-        type: "KeyNode",
-        value,
+        key: ownKey,
     };
 }

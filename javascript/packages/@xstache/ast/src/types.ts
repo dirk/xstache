@@ -73,12 +73,12 @@ export interface SectionNode {
 
 export interface SectionOpeningNode {
     type: "SectionOpeningNode";
-    raw: string;
+    key: KeyNode[];
 }
 
 export interface SectionClosingNode {
     type: "SectionClosingNode";
-    raw: string;
+    key: KeyNode[];
 }
 
 export interface InvertedSectionNode {
