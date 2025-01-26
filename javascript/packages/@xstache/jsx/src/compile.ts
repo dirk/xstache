@@ -4,9 +4,11 @@ import type {
     Children,
     ElementNode,
     NodeList,
+    SectionNode,
     TextNode,
     VariableNode,
 } from "@xstache/ast";
+import { type Implementation } from "@xstache/jsx-runtime";
 import { generate, GENERATOR, Options } from "astring";
 
 export default class Compiler {
@@ -17,23 +19,22 @@ export default class Compiler {
 
     public compileToFunction(nodeList: NodeList) {
         const body = this.renderToString(
-            t.returnStatement(this.children(nodeList.children)),
+            t.returnStatement(this.nodeList(nodeList)),
         );
-        return new Function(this.runtimeName, this.contextName, body);
+        return new Function(
+            this.runtimeName,
+            this.contextName,
+            body,
+        ) as Implementation;
     }
 
     public compileToString(nodeList: NodeList) {
-        const xs = t.functionExpression(
+        const implementation = t.functionExpression(
             undefined,
             [t.identifier(this.runtimeName), t.identifier(this.contextName)],
-            t.blockStatement([
-                t.returnStatement(this.children(nodeList.children)),
-            ]),
+            t.blockStatement([t.returnStatement(this.nodeList(nodeList))]),
         );
-        const codeObject = t.objectExpression([
-            t.objectProperty(t.identifier("xs"), xs),
-        ]);
-        return this.renderToString(codeObject);
+        return this.renderToString(implementation);
     }
 
     renderToString(node: t.Node) {
@@ -60,16 +61,7 @@ export default class Compiler {
     }
 
     nodeList(nodeList: NodeList): t.Expression {
-        const children = this.children(nodeList.children);
-        if (t.isArrayExpression(children)) {
-            return t.callExpression(this.jsx(), [
-                this.fragment(),
-                t.objectExpression([
-                    t.objectProperty(t.identifier("children"), children),
-                ]),
-            ]);
-        }
-        return children;
+        return this.wrap(this.children(nodeList.children));
     }
 
     children(children: Children): t.Expression {
@@ -85,11 +77,13 @@ export default class Compiler {
         if (child === null) {
             return t.nullLiteral();
         } else if (child === undefined) {
-            return { type: "UndefinedLiteral" } as unknown as t.NullLiteral;
+            return this.undefined();
         } else if (child.type === "ElementNode") {
             return this.element(child);
         } else if (child.type === "TextNode") {
             return this.text(child);
+        } else if (child.type === "SectionNode") {
+            return this.section(child);
         } else if (child.type === "VariableNode") {
             return this.variable(child);
         }
@@ -132,8 +126,29 @@ export default class Compiler {
 
     variable(variable: VariableNode) {
         return t.callExpression(
-            t.memberExpression(this.context(), t.identifier("v")),
-            variable.key.map((key) => t.stringLiteral(key.value)),
+            t.memberExpression(this.context(), t.identifier("value")),
+            [
+                t.arrayExpression(
+                    variable.key.map((key) => t.stringLiteral(key.value)),
+                ),
+            ],
+        );
+    }
+
+    section(section: SectionNode) {
+        return t.callExpression(
+            t.memberExpression(this.context(), t.identifier("section")),
+            [
+                t.arrayExpression(
+                    section.opening.key.map((key) =>
+                        t.stringLiteral(key.value),
+                    ),
+                ),
+                t.arrowFunctionExpression(
+                    [t.identifier(this.contextName)],
+                    this.wrap(this.children(section.children)),
+                ),
+            ],
         );
     }
 
@@ -145,8 +160,21 @@ export default class Compiler {
         return t.memberExpression(this.runtime(), t.identifier("jsx"));
     }
 
-    fragment() {
-        return t.memberExpression(this.runtime(), t.identifier("Fragment"));
+    /** Wrap the children into a JSX fragment if it's an array. */
+    wrap(children: t.Expression) {
+        if (!t.isArrayExpression(children)) {
+            return children;
+        }
+        const callee = t.memberExpression(
+            this.runtime(),
+            t.identifier("Fragment"),
+        );
+        return t.callExpression(this.jsx(), [
+            callee,
+            t.objectExpression([
+                t.objectProperty(t.identifier("children"), children),
+            ]),
+        ]);
     }
 
     context() {
@@ -155,5 +183,9 @@ export default class Compiler {
 
     runtime() {
         return t.identifier(this.runtimeName);
+    }
+
+    undefined() {
+        return { type: "UndefinedLiteral" } as unknown as t.NullLiteral;
     }
 }

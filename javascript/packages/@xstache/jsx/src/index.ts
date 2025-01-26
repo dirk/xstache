@@ -1,5 +1,5 @@
 import type { NodeList } from "@xstache/ast";
-import { Template } from "@xstache/jsx-runtime";
+import { type JsxRuntime, Template } from "@xstache/jsx-runtime";
 
 import Compiler from "./compile.js";
 
@@ -9,10 +9,11 @@ interface Options {
 
 export function compileToTemplate(
     nodeList: NodeList,
+    jsxRuntime: JsxRuntime,
     options: Options = {},
 ): Template {
-    const xs = buildCompiler(options).compileToFunction(nodeList);
-    return new Template({ xs });
+    const implementation = buildCompiler(options).compileToFunction(nodeList);
+    return new Template(implementation, jsxRuntime);
 }
 
 export function compileToString(

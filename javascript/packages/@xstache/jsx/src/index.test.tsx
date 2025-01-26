@@ -7,21 +7,61 @@ import { compileToString, compileToTemplate } from "./index.js";
 
 describe("compileToTemplate", () => {
     test.for([
-        ["attributes", "<div foo={bar} />", <div foo="baz" />],
+        ["attributes", "<div foo={top_level} />", <div foo="baz" />],
         [
             "contents in elements",
-            "<span>foo {bar}</span>",
+            "<span>foo {top_level}</span>",
             <span>foo {"baz"}</span>,
         ],
         [
-            "missing contents for elements",
+            "missing contents for value",
             "<span>foo {baz}</span>",
             <span>foo {undefined}</span>,
         ],
+        [
+            "array contents in section",
+            "{#parent.array}{qux}{/parent.array}",
+            <>
+                {"qux1"}
+                {"qux2"}
+            </>,
+        ],
+        [
+            "non-array contents in section",
+            "foo {#parent.single}{qux}{/parent.single}",
+            <>
+                {"foo "}
+                qux
+            </>,
+        ],
+        [
+            "missing contents for section",
+            "foo {#missing.child}qux {qux}{/missing.child}",
+            <>
+                {"foo "}
+                {undefined}
+            </>,
+        ],
+        [
+            "context climbing in section",
+            "bar {#parent.single}{top_level}{/parent.single}",
+            <>
+                {"bar "}
+                baz
+            </>,
+        ],
     ])("compiles and renders with %s", ([_, input, expected]) => {
         const nodeList = parse(input);
-        const template = compileToTemplate(nodeList, { pretty: true });
-        const output = template.render(jsxRuntime, { bar: "baz" });
+        const template = compileToTemplate(nodeList, jsxRuntime, {
+            pretty: true,
+        });
+        const output = template.render({
+            top_level: "baz",
+            parent: {
+                array: [{ qux: "qux1" }, { qux: "qux2" }],
+                single: { qux: "qux" },
+            },
+        });
         expect(output).toEqual(expected);
     });
 });
@@ -30,7 +70,7 @@ describe("compileToString", () => {
     test("compiles", () => {
         const nodeList = parse("<div>Hello {name}</div>");
         expect(compileToString(nodeList)).toMatchInlineSnapshot(
-            `"{xs: function (r, c) {return r.jsx("div", {"children": ["Hello ", c.v("name")]});}}"`,
+            `"function (r, c) {return r.jsx("div", {"children": ["Hello ", c.value(["name"])]});}"`,
         );
     });
 
@@ -38,14 +78,14 @@ describe("compileToString", () => {
         const nodeList = parse("<div foo={bar}>Hello {name}</div>\n<input />");
         expect(compileToString(nodeList, { pretty: true }))
             .toMatchInlineSnapshot(`
-        "{
-          xs: function (r, c) {
-            return [r.jsx("div", {
-              "foo": c.v("bar"),
-              "children": ["Hello ", c.v("name")]
-            }), r.jsx("input", {})];
-          }
-        }"
-      `);
+              "function (r, c) {
+                return r.jsx(r.Fragment, {
+                  children: [r.jsx("div", {
+                    "foo": c.value(["bar"]),
+                    "children": ["Hello ", c.value(["name"])]
+                  }), r.jsx("input", {})]
+                });
+              }"
+            `);
     });
 });
