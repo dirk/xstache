@@ -22,8 +22,8 @@ export default class Compiler {
             t.returnStatement(this.nodeList(nodeList)),
         );
         return new Function(
-            this.runtimeName,
             this.contextName,
+            this.runtimeName,
             body,
         ) as Implementation;
     }
@@ -148,6 +148,7 @@ export default class Compiler {
                     [t.identifier(this.contextName)],
                     this.wrap(this.children(section.children)),
                 ),
+                this.runtime(),
             ],
         );
     }
