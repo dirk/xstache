@@ -67,25 +67,41 @@ describe("compileToTemplate", () => {
 });
 
 describe("compileToString", () => {
+    test("compiles without pretty-printing", () => {
+        const nodeList = parse("<div foo={bar}>Hello {name}</div>\n<input />");
+        expect(compileToString(nodeList, { pretty: false }))
+            .toMatchInlineSnapshot(`"function (r, c) {return r.jsx(r.Fragment, {children: [r.jsx("div", {"foo": c.value(["bar"]),"children": ["Hello ", c.value(["name"])]}), r.jsx("input", {})]});}"`);
+    });
+
     test("compiles", () => {
         const nodeList = parse("<div>Hello {name}</div>");
         expect(compileToString(nodeList)).toMatchInlineSnapshot(
-            `"function (r, c) {return r.jsx("div", {"children": ["Hello ", c.value(["name"])]});}"`,
+            `
+          "function (r, c) {
+            return r.jsx("div", {
+              "children": ["Hello ", c.value(["name"])]
+            });
+          }"
+        `,
         );
     });
 
-    test("compiles with pretty-printing", () => {
+    test("compiles to a module", () => {
         const nodeList = parse("<div foo={bar}>Hello {name}</div>\n<input />");
-        expect(compileToString(nodeList, { pretty: true }))
+        expect(compileToString(nodeList, { module: true }))
             .toMatchInlineSnapshot(`
-              "function (r, c) {
+              "import * as jsxRuntime from "react/jsx-runtime";
+              import { Template } from "@xstache/jsx-runtime";
+              const implementation = function (r, c) {
                 return r.jsx(r.Fragment, {
                   children: [r.jsx("div", {
                     "foo": c.value(["bar"]),
                     "children": ["Hello ", c.value(["name"])]
                   }), r.jsx("input", {})]
                 });
-              }"
+              };
+              export default new Template(implementation, jsxRuntime);
+              "
             `);
     });
 });
