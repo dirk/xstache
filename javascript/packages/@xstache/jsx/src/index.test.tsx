@@ -136,6 +136,8 @@ describe("compileToString", () => {
             { tmpdir: __dirname, postfix: "test.js" },
         );
 
-        expect(renderToString(element)).toMatchInlineSnapshot(`"<first><div>Hello <strong>world</strong></div></first><second><div>Hello <strong></strong></div></second>"`);
+        expect(renderToString(element)).toMatchInlineSnapshot(
+            `"<first><div>Hello <strong>world</strong></div></first><second><div>Hello <strong></strong></div></second>"`,
+        );
     });
 });

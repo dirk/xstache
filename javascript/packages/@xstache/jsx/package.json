@@ -13,6 +13,7 @@
         "test": "vitest --run"
     },
     "devDependencies": {
+        "@types/node": "^22",
         "@xstache/parse": "workspace:*",
         "react": "^19",
         "react-dom": "^19",
