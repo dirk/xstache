@@ -1,4 +1,6 @@
-.PHONY: build dependencies format
+JAVASCRIPT_PACKAGES := javascript/packages/xstache $(wildcard javascript/packages/@xstache/*)
+
+.PHONY: build dependencies format license
 
 all: format test
 
@@ -13,3 +15,9 @@ format: dependencies
 
 test: build
 	cd javascript && pnpm test
+
+# Copy LICENSE into all packages.
+license:
+	@for dir in $(JAVASCRIPT_PACKAGES); do \
+		cp LICENSE $$dir/LICENSE; \
+	done
