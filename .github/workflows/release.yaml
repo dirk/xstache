@@ -8,6 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       id-token: write
     defaults:
       run:
@@ -25,6 +26,7 @@ jobs:
           cache-dependency-path: "javascript/pnpm-lock.yaml"
       - run: "pnpm install"
       - run: "pnpm run build"
+      - run: "pnpm test"
       - run: "npm publish --provenance --access public"
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
