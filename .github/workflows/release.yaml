@@ -1,0 +1,31 @@
+name: Publish Packages
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    defaults:
+      run:
+        working-directory: javascript
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: pnpm
+          cache-dependency-path: "javascript/pnpm-lock.yaml"
+      - run: "pnpm install"
+      - run: "pnpm run build"
+      - run: "npm publish --provenance --access public"
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        working-directory: javascript/xstache
