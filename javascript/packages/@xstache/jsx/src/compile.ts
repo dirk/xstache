@@ -31,7 +31,7 @@ export default class Compiler {
     public compileToString(nodeList: NodeList) {
         const implementation = t.functionExpression(
             undefined,
-            [t.identifier(this.runtimeName), t.identifier(this.contextName)],
+            [t.identifier(this.contextName), t.identifier(this.runtimeName)],
             t.blockStatement([t.returnStatement(this.nodeList(nodeList))]),
         );
         return this.renderToString(implementation);
@@ -110,15 +110,15 @@ export default class Compiler {
                 );
             }
         }
+        let factory = this.jsx();
         if (element.children) {
-            props.push(
-                t.objectProperty(
-                    t.stringLiteral("children"),
-                    this.children(element.children),
-                ),
-            );
+            const children = this.children(element.children);
+            if (t.isArrayExpression(children)) {
+                factory = this.jsxs();
+            }
+            props.push(t.objectProperty(t.stringLiteral("children"), children));
         }
-        return t.callExpression(this.jsx(), [
+        return t.callExpression(factory, [
             t.stringLiteral(opening.name.value),
             t.objectExpression(props),
         ]);
@@ -159,6 +159,10 @@ export default class Compiler {
 
     jsx() {
         return t.memberExpression(this.runtime(), t.identifier("jsx"));
+    }
+
+    jsxs() {
+        return t.memberExpression(this.runtime(), t.identifier("jsxs"));
     }
 
     /** Wrap the children into a JSX fragment if it's an array. */

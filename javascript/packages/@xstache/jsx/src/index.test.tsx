@@ -1,6 +1,10 @@
+import { writeFile } from "node:fs/promises";
 import React from "react";
 import * as jsxRuntime from "react/jsx-runtime";
+import { renderToString } from "react-dom/server";
+import { withFile } from "tmp-promise";
 import { describe, expect, test } from "vitest";
+// import { $ } from "zx";
 import parse from "@xstache/parse";
 
 import { compileToString, compileToTemplate } from "./index.js";
@@ -69,16 +73,19 @@ describe("compileToTemplate", () => {
 describe("compileToString", () => {
     test("compiles without pretty-printing", () => {
         const nodeList = parse("<div foo={bar}>Hello {name}</div>\n<input />");
-        expect(compileToString(nodeList, { pretty: false }))
-            .toMatchInlineSnapshot(`"function (r, c) {return r.jsx(r.Fragment, {children: [r.jsx("div", {"foo": c.value(["bar"]),"children": ["Hello ", c.value(["name"])]}), r.jsx("input", {})]});}"`);
+        expect(
+            compileToString(nodeList, { pretty: false }),
+        ).toMatchInlineSnapshot(
+            `"function (c, r) {return r.jsx(r.Fragment, {children: [r.jsxs("div", {"foo": c.value(["bar"]),"children": ["Hello ", c.value(["name"])]}), r.jsx("input", {})]});}"`,
+        );
     });
 
     test("compiles", () => {
         const nodeList = parse("<div>Hello {name}</div>");
         expect(compileToString(nodeList)).toMatchInlineSnapshot(
             `
-          "function (r, c) {
-            return r.jsx("div", {
+          "function (c, r) {
+            return r.jsxs("div", {
               "children": ["Hello ", c.value(["name"])]
             });
           }"
@@ -92,9 +99,9 @@ describe("compileToString", () => {
             .toMatchInlineSnapshot(`
               "import * as jsxRuntime from "react/jsx-runtime";
               import { Template } from "@xstache/jsx-runtime";
-              const implementation = function (r, c) {
+              const implementation = function (c, r) {
                 return r.jsx(r.Fragment, {
-                  children: [r.jsx("div", {
+                  children: [r.jsxs("div", {
                     "foo": c.value(["bar"]),
                     "children": ["Hello ", c.value(["name"])]
                   }), r.jsx("input", {})]
@@ -103,5 +110,36 @@ describe("compileToString", () => {
               export default new Template(implementation, jsxRuntime);
               "
             `);
+    });
+
+    test("compiles to an importable module", async () => {
+        expect.assertions(1);
+        const nodeList = parse("<div>Hello <strong>{name}</strong></div>\n");
+        const code = compileToString(nodeList, { module: true });
+
+        // Create a temporary file for use in the current directory.
+        const element = await withFile(
+            async ({ path }) => {
+                await writeFile(path, code);
+
+                // Dynamically import the module we just wrote. This way we'll
+                // use our JavaScript environment's module resolution.
+                const template = (await import(path)).default;
+
+                return (
+                    <>
+                        <first>
+                            {template.render({ name: "world" })}
+                        </first>
+                        <second>
+                            {template.render()}
+                        </second>
+                    </>
+                );
+            },
+            { tmpdir: __dirname, postfix: "test.js" },
+        );
+
+        expect(renderToString(element)).toMatchInlineSnapshot();
     });
 });

@@ -15,8 +15,10 @@
     "devDependencies": {
         "@xstache/parse": "workspace:*",
         "react": "^19",
+        "react-dom": "^19",
         "rimraf": "^6",
         "source-map": "^0",
+        "tmp-promise": "^3",
         "typescript": "^5",
         "vitest": "^3"
     },
