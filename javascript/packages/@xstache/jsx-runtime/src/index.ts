@@ -14,7 +14,7 @@ class Context {
         let found = true;
         let value = this.data;
         for (const key of keys) {
-            const next = value[key];
+            const next = value ? value[key] : undefined;
             if (next) {
                 value = next;
             } else {
