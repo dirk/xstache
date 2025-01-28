@@ -1,6 +1,6 @@
 # Xstache
 
-Isomorphic templating for the web. Xstache is an experimental fusion of XML and Mustache to create a templating language designed for how we render HTML today.
+Isomorphic templating for the web. Xstache fuses concepts from JSX and Mustache to create a templating language that can render to both an HTML string *or* to a virtual DOM.
 
 ```xml
 <button

@@ -128,18 +128,14 @@ describe("compileToString", () => {
 
                 return (
                     <>
-                        <first>
-                            {template.render({ name: "world" })}
-                        </first>
-                        <second>
-                            {template.render()}
-                        </second>
+                        <first>{template.render({ name: "world" })}</first>
+                        <second>{template.render()}</second>
                     </>
                 );
             },
             { tmpdir: __dirname, postfix: "test.js" },
         );
 
-        expect(renderToString(element)).toMatchInlineSnapshot();
+        expect(renderToString(element)).toMatchInlineSnapshot(`"<first><div>Hello <strong>world</strong></div></first><second><div>Hello <strong></strong></div></second>"`);
     });
 });
