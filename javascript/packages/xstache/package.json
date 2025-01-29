@@ -1,6 +1,13 @@
 {
     "name": "xstache",
     "version": "0.0.0",
+    "description": "Isomorphic templates for the web",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/dirk/xstache.git"
+    },
+    "homepage": "https://github.com/dirk/xstache",
+    "license": "BSD-2-Clause",
     "type": "module",
     "exports": {
         ".": {
