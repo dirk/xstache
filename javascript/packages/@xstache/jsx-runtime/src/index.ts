@@ -56,3 +56,9 @@ export class Template {
         return this.implementation(new Context(data), this.jsxRuntime);
     }
 }
+
+const componentFactory =
+    (implementation: Implementation, jsxRuntime: JsxRuntime) => (props: any) =>
+        implementation(new Context(props), jsxRuntime);
+
+export { componentFactory };

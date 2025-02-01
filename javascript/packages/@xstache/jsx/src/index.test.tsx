@@ -98,7 +98,7 @@ describe("compileToString", () => {
         expect(compileToString(nodeList, { module: true }))
             .toMatchInlineSnapshot(`
               "import * as jsxRuntime from "react/jsx-runtime";
-              import { Template } from "@xstache/jsx-runtime";
+              import { componentFactory } from "@xstache/jsx-runtime";
               const implementation = function (c, r) {
                 return r.jsx(r.Fragment, {
                   children: [r.jsxs("div", {
@@ -107,7 +107,7 @@ describe("compileToString", () => {
                   }), r.jsx("input", {})]
                 });
               };
-              export default new Template(implementation, jsxRuntime);
+              export default componentFactory(implementation, jsxRuntime);
               "
             `);
     });
@@ -124,12 +124,16 @@ describe("compileToString", () => {
 
                 // Dynamically import the module we just wrote. This way we'll
                 // use our JavaScript environment's module resolution.
-                const template = (await import(path)).default;
+                const Component = (await import(path)).default;
 
                 return (
                     <>
-                        <first>{template.render({ name: "world" })}</first>
-                        <second>{template.render()}</second>
+                        <first>
+                            <Component name="world" />
+                        </first>
+                        <second>
+                            <Component />
+                        </second>
                     </>
                 );
             },

@@ -75,9 +75,9 @@ export default class Compiler {
 
     child(child: Child): t.Expression {
         if (child === null) {
-            return t.nullLiteral();
+            return t.identifier("null");
         } else if (child === undefined) {
-            return this.undefined();
+            return t.identifier("undefined");
         } else if (child.type === "ElementNode") {
             return this.element(child);
         } else if (child.type === "TextNode") {
@@ -188,9 +188,5 @@ export default class Compiler {
 
     runtime() {
         return t.identifier(this.runtimeName);
-    }
-
-    undefined() {
-        return { type: "UndefinedLiteral" } as unknown as t.NullLiteral;
     }
 }

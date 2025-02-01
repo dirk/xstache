@@ -44,9 +44,9 @@ function wrapInModule(implementation: string, options: ModuleOptions) {
             `import * as jsxRuntime from ${JSON.stringify(jsxImportSource)};`,
         );
     }
-    lines.push(`import { Template } from "@xstache/jsx-runtime";`);
+    lines.push(`import { componentFactory } from "@xstache/jsx-runtime";`);
     lines.push(`const implementation = ${implementation};`);
-    lines.push(`export default new Template(implementation, jsxRuntime);`);
+    lines.push(`export default componentFactory(implementation, jsxRuntime);`);
     lines.push(""); // Include a trailing newline.
     return lines.join("\n");
 }

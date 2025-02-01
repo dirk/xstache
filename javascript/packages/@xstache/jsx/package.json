@@ -17,7 +17,7 @@
     },
     "devDependencies": {
         "@types/node": "^22",
-        "@xstache/parse": "workspace:*",
+        "@types/yargs": "^17",
         "react": "^19",
         "react-dom": "^19",
         "rimraf": "^6",
@@ -28,10 +28,12 @@
     },
     "peerDependencies": {
         "@xstache/ast": "workspace:*",
-        "@xstache/jsx-runtime": "workspace:*"
+        "@xstache/jsx-runtime": "workspace:*",
+        "@xstache/parse": "workspace:*"
     },
     "dependencies": {
         "@babel/types": "^7",
-        "astring": "^1"
+        "astring": "^1",
+        "yargs": "^17"
     }
 }
