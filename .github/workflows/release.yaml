@@ -61,3 +61,5 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         working-directory: packages/${{matrix.package}}
+        # Will error if the package's version is already published.
+        continue-on-error: true
