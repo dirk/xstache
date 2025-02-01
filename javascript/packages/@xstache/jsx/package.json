@@ -8,7 +8,7 @@
     },
     "type": "module",
     "bin": {
-        "xstache-jsx": "./dist/cli.js"
+        "xstache-jsx": "dist/cli.js"
     },
     "exports": {
         ".": {
