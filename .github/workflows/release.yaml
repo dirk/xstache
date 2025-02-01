@@ -58,8 +58,11 @@ jobs:
         with:
           name: javascript
       - run: "npm publish --provenance --access public ${{inputs.dry_run && '--dry-run' || ''}}"
+        id: publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         working-directory: packages/${{matrix.package}}
         # Will error if the package's version is already published.
         continue-on-error: true
+      - run: "echo ::warning::Failed to publish ${{matrix.package}}"
+        if: ${{steps.publish.outcome != 'success'}}
