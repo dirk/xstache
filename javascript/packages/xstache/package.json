@@ -4,7 +4,7 @@
     "description": "Isomorphic templates for the web",
     "repository": {
         "type": "git",
-        "url": "https://github.com/dirk/xstache.git"
+        "url": "git+https://github.com/dirk/xstache.git"
     },
     "homepage": "https://github.com/dirk/xstache",
     "license": "BSD-2-Clause",

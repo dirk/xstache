@@ -1,6 +1,11 @@
 {
     "name": "@xstache/jsx",
     "version": "0.0.1",
+    "description": "Compile Xstache templates to JSX components",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dirk/xstache.git"
+    },
     "type": "module",
     "bin": {
         "xstache-jsx": "./dist/cli.js"

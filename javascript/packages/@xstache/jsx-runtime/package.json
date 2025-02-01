@@ -1,6 +1,11 @@
 {
     "name": "@xstache/jsx-runtime",
     "version": "0.0.1",
+    "description": "Runtime support for Xstache rendering to JSX",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dirk/xstache.git"
+    },
     "type": "module",
     "exports": {
         ".": {

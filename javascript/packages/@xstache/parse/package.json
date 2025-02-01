@@ -1,6 +1,11 @@
 {
     "name": "@xstache/parse",
     "version": "0.0.1",
+    "description": "Parse Xstache into an abstract syntax tree",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dirk/xstache.git"
+    },
     "type": "module",
     "exports": {
         ".": {
