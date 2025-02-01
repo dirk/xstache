@@ -49,6 +49,7 @@ jobs:
         with:
           name: javascript
       - run: "pwd && ls -la"
+        working-directory: .
       # env:
       #   PUBLISH_COMMAND: "npm publish --provenance --access public ${{inputs.dry_run && '--dry-run' || ''}}"
       # - run: $PUBLISH_COMMAND
