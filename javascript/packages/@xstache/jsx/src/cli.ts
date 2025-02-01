@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import chalk from "chalk";
 import { readFile, writeFile } from "node:fs/promises";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -19,7 +20,7 @@ const parsed = argv.parseSync();
 const args = parsed._;
 
 if (args.length === 0) {
-    argv.showHelp();
+    argv.showHelp("log");
     process.exit(1);
 }
 
@@ -50,17 +51,29 @@ async function next() {
     const successor = next();
 
     const nodeList = parse(source);
-    const templateSource = compileToString(nodeList, {
+    const outputSource = compileToString(nodeList, {
         module: true,
     });
 
     if (parsed.write) {
         const outputFile = getOutputFile(file);
-        // TODO: Check if we're changing the output file's contents.
-        await writeFile(outputFile, templateSource);
-        console.log(file);
+        let existingOutputSource: string | undefined = undefined;
+        try {
+            existingOutputSource = await readFile(outputFile, "utf-8");
+        } catch (error) {
+            if (error.code !== "ENOENT") {
+                throw error;
+            }
+        }
+
+        if (outputSource === existingOutputSource) {
+            console.log(`${chalk.dim(file)} (unchanged)`)
+        } else {
+            await writeFile(outputFile, outputSource);
+            console.log(file);
+        }
     } else {
-        console.log(templateSource);
+        console.log(outputSource);
     }
 
     await successor;
