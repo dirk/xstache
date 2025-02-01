@@ -1,6 +1,6 @@
 {
     "name": "xstache",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "Isomorphic templates for the web",
     "repository": {
         "type": "git",
