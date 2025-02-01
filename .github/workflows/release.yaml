@@ -41,20 +41,21 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    defaults:
-      run:
-        working-directory: javascript
+    strategy:
+      matrix:
+        package:
+          - xstache
+          - "@xstache/ast"
+          - "@xstache/jsx"
+          - "@xstache/jsx-runtime"
+          - "@xstache/parse"
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: javascript
       - run: "pwd && ls -la"
         working-directory: .
-      # env:
-      #   PUBLISH_COMMAND: "npm publish --provenance --access public ${{inputs.dry_run && '--dry-run' || ''}}"
-      # - run: $PUBLISH_COMMAND
-      #   env: { NODE_AUTH_TOKEN: "${{secrets.NPM_TOKEN}}" }
-      #   working-directory: javascript/packages/xstache
-      # - run: $PUBLISH_COMMAND
-      #   env: { NODE_AUTH_TOKEN: "${{secrets.NPM_TOKEN}}" }
-      #   working-directory: javascript/packages/@xstache/ast
+      - run: "npm publish --provenance --access public ${{inputs.dry_run && '--dry-run' || ''}}"
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        working-directory: packages/${{matrix.package}}
