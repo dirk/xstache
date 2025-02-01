@@ -27,7 +27,8 @@
         "source-map": "^0",
         "tmp-promise": "^3",
         "typescript": "^5",
-        "vitest": "^3"
+        "vitest": "^3",
+        "zx": "^8"
     },
     "peerDependencies": {
         "@xstache/ast": "workspace:*",

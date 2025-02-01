@@ -29,7 +29,7 @@ const files = args;
 
 function getOutputFile(file: string) {
     if (file.endsWith(".xstache")) {
-        return file.slice(0, -(".xstache".length)) + ".jsx";
+        return file.slice(0, -".xstache".length) + ".jsx";
     }
     return file + ".jsx";
 }
@@ -67,7 +67,7 @@ async function next() {
         }
 
         if (outputSource === existingOutputSource) {
-            console.log(`${chalk.dim(file)} (unchanged)`)
+            console.log(`${chalk.dim(file)} (unchanged)`);
         } else {
             await writeFile(outputFile, outputSource);
             console.log(file);
