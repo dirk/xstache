@@ -53,8 +53,6 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: javascript
-      - run: "pwd && ls -la"
-        working-directory: .
       - run: "npm publish --provenance --access public ${{inputs.dry_run && '--dry-run' || ''}}"
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
