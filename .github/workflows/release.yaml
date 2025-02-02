@@ -58,7 +58,9 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: javascript
-      - run: "npm publish --provenance --access public ${{inputs.dry_run && '--dry-run' || ''}}"
+      - run: |
+          filename=$(pnpm pack --json | jq --raw-output ".filename")
+          npm publish --provenance --access public ${{inputs.dry_run && '--dry-run' || ''}} $filename
         id: publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
