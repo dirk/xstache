@@ -1,0 +1,32 @@
+{
+    "name": "@xstache/html",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "rimraf dist && tsc",
+        "test": "vitest --run"
+    },
+    "devDependencies": {
+        "@types/node": "^22",
+        "rimraf": "^6",
+        "typescript": "^5",
+        "vitest": "^3"
+    },
+    "peerDependencies": {
+        "@xstache/ast": "workspace:*",
+        "@xstache/parse": "workspace:*"
+    },
+    "dependencies": {
+        "@babel/types": "^7",
+        "astring": "^1"
+    }
+}

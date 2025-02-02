@@ -59,4 +59,24 @@ describe("xstache-jsx", () => {
           "
         `);
     });
+
+    test("handles an empty file", async () => {
+        expect.assertions(2);
+
+        const inputFile = join(testsDirectory, "empty.xstache");
+        const outputFile = join(testsDirectory, "empty.jsx");
+        expect(await exists(outputFile)).toBe(false);
+
+        await $$`node ../../dist/cli.js --write ${inputFile}`;
+
+        expect(await readFile(outputFile, "utf-8")).toMatchInlineSnapshot(`
+          "import * as jsxRuntime from "react/jsx-runtime";
+          import { componentFactory } from "@xstache/jsx-runtime";
+          const implementation = function (c, r) {
+            return undefined;
+          };
+          export default componentFactory(implementation, jsxRuntime);
+          "
+        `);
+    });
 });

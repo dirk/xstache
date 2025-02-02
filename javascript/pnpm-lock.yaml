@@ -21,6 +21,50 @@ importers:
         specifier: ^5
         version: 5.7.3
 
+  packages/@xstache/html:
+    dependencies:
+      '@babel/types':
+        specifier: ^7
+        version: 7.26.5
+      '@xstache/ast':
+        specifier: workspace:*
+        version: link:../ast
+      '@xstache/parse':
+        specifier: workspace:*
+        version: link:../parse
+      astring:
+        specifier: ^1
+        version: 1.9.0
+    devDependencies:
+      '@types/node':
+        specifier: ^22
+        version: 22.10.7
+      rimraf:
+        specifier: ^6
+        version: 6.0.1
+      typescript:
+        specifier: ^5
+        version: 5.7.3
+      vitest:
+        specifier: ^3
+        version: 3.0.2(@types/node@22.10.7)
+
+  packages/@xstache/integration:
+    dependencies:
+      '@xstache/jsx':
+        specifier: workspace:*
+        version: link:../jsx
+    devDependencies:
+      typescript:
+        specifier: ^5
+        version: 5.7.3
+      vitest:
+        specifier: ^3
+        version: 3.0.2(@types/node@22.10.7)
+      zx:
+        specifier: ^8
+        version: 8.3.2
+
   packages/@xstache/jsx:
     dependencies:
       '@babel/types':

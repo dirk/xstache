@@ -1,0 +1,2 @@
+<div foo={bar}>Hello {name}</div>
+<input />

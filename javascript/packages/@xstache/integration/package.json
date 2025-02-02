@@ -1,0 +1,16 @@
+{
+    "name": "@xstache/integration",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "test": "vitest --run"
+    },
+    "devDependencies": {
+        "typescript": "^5",
+        "vitest": "^3",
+        "zx": "^8"
+    },
+    "peerDependencies": {
+        "@xstache/jsx": "workspace:*"
+    }
+}
