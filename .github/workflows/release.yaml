@@ -66,6 +66,7 @@ jobs:
           node-version: "22.x"
           registry-url: "https://registry.npmjs.org"
       - run: |
+          set -eo pipefail
           filename=$(pnpm pack --json | jq --raw-output ".filename")
           npm publish --provenance --access public ${{inputs.dry_run && '--dry-run' || ''}} $filename
         id: publish
