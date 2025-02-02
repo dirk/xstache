@@ -8,7 +8,8 @@ describe("xstache-jsx", () => {
     test("prints input files to stdout", async () => {
         expect.assertions(3);
         const input = join(__dirname, "__tests__", "test.xstache");
-        const { stdout, stderr, exitCode } = await $$`pnpm exec xstache-jsx ${input}`;
+        const { stdout, stderr, exitCode } =
+            await $$`pnpm exec xstache-jsx ${input}`;
         expect(exitCode).toBe(0);
         expect(stderr).toBe("");
         expect(stdout).toMatchInlineSnapshot(`

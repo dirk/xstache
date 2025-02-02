@@ -29,6 +29,9 @@ importers:
       '@xstache/ast':
         specifier: workspace:*
         version: link:../ast
+      '@xstache/html-runtime':
+        specifier: workspace:*
+        version: link:../html-runtime
       '@xstache/parse':
         specifier: workspace:*
         version: link:../parse
@@ -48,6 +51,15 @@ importers:
       vitest:
         specifier: ^3
         version: 3.0.2(@types/node@22.10.7)
+
+  packages/@xstache/html-runtime:
+    devDependencies:
+      rimraf:
+        specifier: ^6
+        version: 6.0.1
+      typescript:
+        specifier: ^5
+        version: 5.7.3
 
   packages/@xstache/integration:
     dependencies:

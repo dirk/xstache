@@ -8,6 +8,7 @@ import type {
     TextNode,
     VariableNode,
 } from "@xstache/ast";
+import { Implementation } from "@xstache/html-runtime";
 import { generate, GENERATOR, Options } from "astring";
 
 export default class Compiler {
@@ -15,6 +16,17 @@ export default class Compiler {
     public readonly bufferName = "b";
 
     constructor(public readonly pretty: boolean = false) {}
+
+    public compileToFunction(nodeList: NodeList) {
+        const body = this.renderToString(
+            t.blockStatement(this.nodeList(nodeList)),
+        );
+        return new Function(
+            this.contextName,
+            this.bufferName,
+            body,
+        ) as Implementation;
+    }
 
     public compileToString(nodeList: NodeList) {
         const implementation = t.functionExpression(
@@ -87,16 +99,19 @@ export default class Compiler {
                 ),
             );
         }
+        const implementation = opening.selfClosing
+            ? t.identifier("undefined")
+            : t.arrowFunctionExpression(
+                  [],
+                  t.blockStatement(this.children(element.children)),
+              );
         return t.expressionStatement(
             t.callExpression(
                 t.memberExpression(this.context(), t.identifier("element")),
                 [
                     t.stringLiteral(opening.name.value),
                     t.objectExpression(props),
-                    t.arrowFunctionExpression(
-                        [this.context(), this.buffer()],
-                        t.blockStatement(this.children(element.children)),
-                    ),
+                    implementation,
                     this.buffer(),
                 ],
             ),

@@ -23,6 +23,7 @@
     },
     "peerDependencies": {
         "@xstache/ast": "workspace:*",
+        "@xstache/html-runtime": "workspace:*",
         "@xstache/parse": "workspace:*"
     },
     "dependencies": {

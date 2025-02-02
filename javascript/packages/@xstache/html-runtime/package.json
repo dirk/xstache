@@ -1,0 +1,23 @@
+{
+    "name": "@xstache/html-runtime",
+    "version": "0.0.0",
+    "description": "Runtime support for Xstache rendering to HTML as a string",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dirk/xstache.git"
+    },
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "rimraf dist && tsc"
+    },
+    "devDependencies": {
+        "rimraf": "^6",
+        "typescript": "^5"
+    }
+}
