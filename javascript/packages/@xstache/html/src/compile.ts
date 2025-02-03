@@ -5,6 +5,7 @@ import type {
     Children,
     ElementNode,
     NodeList,
+    SectionNode,
     TextNode,
     VariableNode,
 } from "@xstache/ast";
@@ -80,8 +81,8 @@ export default class Compiler {
             return this.element(child);
         } else if (child.type === "TextNode") {
             return this.text(child);
-            // } else if (child.type === "SectionNode") {
-            //     return this.section(child);
+        } else if (child.type === "SectionNode") {
+            return t.expressionStatement(this.section(child));
         } else if (child.type === "VariableNode") {
             return t.expressionStatement(this.push(this.variable(child)));
         }
@@ -133,6 +134,23 @@ export default class Compiler {
             [
                 t.arrayExpression(
                     variable.key.map((key) => t.stringLiteral(key.value)),
+                ),
+            ],
+        );
+    }
+
+    section(section: SectionNode) {
+        return t.callExpression(
+            t.memberExpression(this.context(), t.identifier("section")),
+            [
+                t.arrayExpression(
+                    section.opening.key.map((key) =>
+                        t.stringLiteral(key.value),
+                    ),
+                ),
+                t.arrowFunctionExpression(
+                    [this.context()],
+                    t.blockStatement(this.children(section.children)),
                 ),
             ],
         );

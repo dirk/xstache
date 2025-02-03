@@ -36,6 +36,18 @@ class Context {
         return found ? value : this.parent?.value(keys);
     }
 
+    public section(
+        keys: string[],
+        implementation: (context: Context) => any,
+    ) {
+        const data = this.value(keys);
+        if (!data) {
+            return undefined;
+        }
+        const render = (data: any) => implementation(new Context(data, this));
+        return Array.isArray(data) ? data.forEach(render) : render(data);
+    }
+
     public element(
         name: string,
         attributes: Record<string, any>,
