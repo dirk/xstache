@@ -36,10 +36,7 @@ class Context {
         return found ? value : this.parent?.value(keys);
     }
 
-    public section(
-        keys: string[],
-        implementation: (context: Context) => any,
-    ) {
+    public section(keys: string[], implementation: (context: Context) => any) {
         const data = this.value(keys);
         if (!data) {
             return undefined;

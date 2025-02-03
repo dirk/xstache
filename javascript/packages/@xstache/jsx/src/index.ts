@@ -1,15 +1,15 @@
 import type { NodeList } from "@xstache/ast";
-import { type JsxRuntime, Template } from "@xstache/jsx-runtime";
+import { componentFactory, type JsxRuntime } from "@xstache/jsx-runtime";
 
 import Compiler from "./compile.js";
 
-export function compileToTemplate(
+export function compileToComponent(
     nodeList: NodeList,
     jsxRuntime: JsxRuntime,
     options: CompilerOptions = {},
-): Template {
+): (props: any) => any {
     const implementation = buildCompiler(options).compileToFunction(nodeList);
-    return new Template(implementation, jsxRuntime);
+    return componentFactory(implementation, jsxRuntime);
 }
 
 type ModuleOptions = Partial<{

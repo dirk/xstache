@@ -7,9 +7,9 @@ import { describe, expect, test } from "vitest";
 // import { $ } from "zx";
 import parse from "@xstache/parse";
 
-import { compileToString, compileToTemplate } from "./index.js";
+import { compileToString, compileToComponent } from "./index.js";
 
-describe("compileToTemplate", () => {
+describe("compileToComponent", () => {
     test.for([
         ["attributes", "<div foo={top_level} />", <div foo="baz" />],
         [
@@ -56,10 +56,10 @@ describe("compileToTemplate", () => {
         ],
     ])("compiles and renders with %s", ([_, input, expected]) => {
         const nodeList = parse(input);
-        const template = compileToTemplate(nodeList, jsxRuntime, {
+        const component = compileToComponent(nodeList, jsxRuntime, {
             pretty: true,
         });
-        const output = template.render({
+        const output = component({
             top_level: "baz",
             parent: {
                 array: [{ qux: "qux1" }, { qux: "qux2" }],
