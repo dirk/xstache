@@ -8,8 +8,8 @@ import type {
     TextNode,
     VariableNode,
 } from "@xstache/ast";
-import { type Implementation } from "@xstache/jsx-runtime";
-import { generate, GENERATOR, Options } from "astring";
+import type { Implementation } from "@xstache/jsx-runtime";
+import { generate, GENERATOR, type Options } from "astring";
 
 export default class Compiler {
     public readonly contextName = "c";

@@ -1,5 +1,5 @@
-import { describe, expect, test } from "vitest";
 import parse from "@xstache/parse";
+import { describe, expect, test } from "vitest";
 
 import { compileToString, compileToTemplate } from "./index.js";
 
