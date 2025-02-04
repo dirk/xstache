@@ -65,4 +65,36 @@ describe("compileToTemplate", () => {
           "
         `);
     });
+
+    test("section as condition", () => {
+        const nodeList = parse("{#foo}Hello {bar}.\n{/foo}");
+        const template = compileToTemplate(nodeList);
+
+        expect(
+            template.render({
+                foo: { bar: "baz" },
+            }),
+        ).toMatchInlineSnapshot(`
+          "Hello baz.
+          "
+        `);
+        // Should use the parent context's `bar` if it's not found in the
+        // section's context.
+        expect(
+            template.render({
+                bar: "baz",
+                foo: { baz: "qux" },
+            }),
+        ).toMatchInlineSnapshot(`
+          "Hello baz.
+          "
+        `);
+
+        expect(
+            template.render({
+                foo: null,
+            }),
+        ).toMatchInlineSnapshot(`""`);
+        expect(template.render({})).toMatchInlineSnapshot(`""`);
+    });
 });
