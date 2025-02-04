@@ -23,7 +23,7 @@ jobs:
           node-version: "22.x"
           cache: pnpm
           cache-dependency-path: "javascript/pnpm-lock.yaml"
-      - run: "pnpm install --filter \"\\!@xstache/integration\""
+      - run: "pnpm install --filter \"\\!@xstache/integration\" --filter xstache --filter \"@xstache/*\""
       - run: "pnpm run build"
       # Run installation again now that necessary `dist` JavaScript files have
       # been built.
