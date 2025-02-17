@@ -28,11 +28,11 @@
         "@types/yargs": "^17",
         "react": "^19",
         "react-dom": "^19",
-        "rimraf": "^6",
+        "rimraf": "catalog:",
         "source-map": "^0",
         "tmp-promise": "^3",
-        "typescript": "^5",
-        "vitest": "^3",
+        "typescript": "catalog:",
+        "vitest": "catalog:",
         "zx": "^8"
     },
     "peerDependencies": {

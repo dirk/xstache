@@ -22,7 +22,7 @@
         "build": "rimraf dist && tsc"
     },
     "devDependencies": {
-        "rimraf": "^6",
-        "typescript": "^5"
+        "rimraf": "catalog:",
+        "typescript": "catalog:"
     }
 }
