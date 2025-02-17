@@ -44,6 +44,7 @@
         "@babel/types": "^7",
         "astring": "^1",
         "chalk": "^4",
+        "fast-glob": "^3",
         "yargs": "^17"
     }
 }

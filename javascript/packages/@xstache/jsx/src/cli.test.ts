@@ -79,4 +79,42 @@ describe("xstache-jsx", () => {
           "
         `);
     });
+
+    test("handles a glob of files", async () => {
+        expect.assertions(4);
+
+        const outputFiles = [
+            join(testsDirectory, "test.jsx"),
+            join(testsDirectory, "empty.jsx"),
+        ];
+        for (const file of outputFiles) {
+            expect(await exists(file)).toBe(false);
+        }
+
+        await $$`node ../../dist/cli.js --write "*.xstache"`;
+
+        expect(await readFile(outputFiles[0], "utf-8")).toMatchInlineSnapshot(`
+          "import * as jsxRuntime from "react/jsx-runtime";
+          import { componentFactory } from "@xstache/jsx-runtime";
+          const implementation = function (c, r) {
+            return r.jsx(r.Fragment, {
+              children: [r.jsxs("div", {
+                "foo": c.value(["bar"]),
+                "children": ["Hello ", c.value(["name"])]
+              }), r.jsx("input", {})]
+            });
+          };
+          export default componentFactory(implementation, jsxRuntime);
+          "
+        `);
+        expect(await readFile(outputFiles[1], "utf-8")).toMatchInlineSnapshot(`
+          "import * as jsxRuntime from "react/jsx-runtime";
+          import { componentFactory } from "@xstache/jsx-runtime";
+          const implementation = function (c, r) {
+            return undefined;
+          };
+          export default componentFactory(implementation, jsxRuntime);
+          "
+        `);
+    });
 });
