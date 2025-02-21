@@ -1,6 +1,6 @@
 {
     "name": "@xstache/jsx",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Compile Xstache templates to JSX components",
     "repository": {
         "type": "git",
