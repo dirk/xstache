@@ -33,6 +33,31 @@ importers:
         specifier: 'catalog:'
         version: 5.8.3
 
+  packages/@xstache/cli:
+    dependencies:
+      '@xstache/ast':
+        specifier: workspace:*
+        version: link:../ast
+      '@xstache/parse':
+        specifier: workspace:*
+        version: link:../parse
+      chalk:
+        specifier: ^4
+        version: 4.1.2
+      fast-glob:
+        specifier: ^3
+        version: 3.3.3
+      yargs:
+        specifier: ^17
+        version: 17.7.2
+    devDependencies:
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.0.1
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.3
+
   packages/@xstache/html:
     dependencies:
       '@babel/types':
@@ -41,6 +66,9 @@ importers:
       '@xstache/ast':
         specifier: workspace:*
         version: link:../ast
+      '@xstache/cli':
+        specifier: workspace:*
+        version: link:../cli
       '@xstache/html-runtime':
         specifier: workspace:*
         version: link:../html-runtime
@@ -63,6 +91,9 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 3.2.4(@types/node@22.16.5)
+      zx:
+        specifier: ^8
+        version: 8.7.1
 
   packages/@xstache/html-runtime:
     devDependencies:
@@ -75,6 +106,9 @@ importers:
 
   packages/@xstache/integration:
     dependencies:
+      '@xstache/html':
+        specifier: workspace:*
+        version: link:../html
       '@xstache/jsx':
         specifier: workspace:*
         version: link:../jsx
@@ -97,6 +131,9 @@ importers:
       '@xstache/ast':
         specifier: workspace:*
         version: link:../ast
+      '@xstache/cli':
+        specifier: workspace:*
+        version: link:../cli
       '@xstache/jsx-runtime':
         specifier: workspace:*
         version: link:../jsx-runtime
@@ -106,15 +143,6 @@ importers:
       astring:
         specifier: ^1
         version: 1.9.0
-      chalk:
-        specifier: ^4
-        version: 4.1.2
-      fast-glob:
-        specifier: ^3
-        version: 3.3.3
-      yargs:
-        specifier: ^17
-        version: 17.7.2
     devDependencies:
       '@types/node':
         specifier: ^22

@@ -11,6 +11,7 @@
         "zx": "^8"
     },
     "peerDependencies": {
+        "@xstache/html": "workspace:*",
         "@xstache/jsx": "workspace:*"
     }
 }

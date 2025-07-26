@@ -8,5 +8,5 @@ cli(
         compileToString(nodeList, {
             module: true,
         }),
-    "jsx",
+    "js",
 );

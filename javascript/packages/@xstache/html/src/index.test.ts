@@ -66,7 +66,6 @@ describe("compileToString", () => {
     ])("compiles and renders with %s", ([_, input, expected]) => {
         const nodeList = parse(input);
         const code = compileToString(nodeList);
-        console.log(code);
         const implementation = eval(`(${code})`);
         const template = new Template(implementation);
         const output = template.render({
