@@ -7,4 +7,3 @@ catalog:
   rimraf: '^6'
   typescript: '^5'
   vitest: '^3'
-  '@vitest/coverage-v8': '^3'
