@@ -2,6 +2,9 @@
     "name": "@xstache/html",
     "version": "0.0.0",
     "type": "module",
+    "bin": {
+        "xstache-html": "dist/cli.js"
+    },
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
@@ -19,10 +22,12 @@
         "@types/node": "^22",
         "rimraf": "catalog:",
         "typescript": "catalog:",
-        "vitest": "catalog:"
+        "vitest": "catalog:",
+        "zx": "^8"
     },
     "peerDependencies": {
         "@xstache/ast": "workspace:*",
+        "@xstache/cli": "workspace:*",
         "@xstache/html-runtime": "workspace:*",
         "@xstache/parse": "workspace:*"
     },

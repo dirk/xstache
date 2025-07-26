@@ -1,0 +1,35 @@
+{
+    "name": "@xstache/cli",
+    "version": "0.0.2",
+    "description": "CLI support for Xstache",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dirk/xstache.git"
+    },
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "rimraf dist && tsc"
+    },
+    "devDependencies": {
+        "rimraf": "catalog:",
+        "typescript": "catalog:"
+    },
+    "peerDependencies": {
+        "@xstache/ast": "workspace:*",
+        "@xstache/parse": "workspace:*"
+    },
+    "dependencies": {
+        "chalk": "^4",
+        "fast-glob": "^3",
+        "yargs": "^17"
+    }
+}
