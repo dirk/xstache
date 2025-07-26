@@ -53,17 +53,19 @@ class Context {
     ) {
         buffer.push(`<${name}`);
         for (const key in attributes) {
-            let attribute = ` ${key}`;
             const value = attributes[key];
             if (value) {
                 // TODO: Allow value to be a function implementation that accepts a context and
                 //     buffer. That's necessary to support sections, inverted sections, etc. as
                 //     attribute values.
-                const stringified = this.coerceToString(value);
-                const escaped = this.escape(stringified);
-                attribute += `="${escaped}"`;
+                let attribute = ` ${key}`;
+                if (value !== true) {
+                    const stringified = this.coerceToString(value);
+                    const escaped = this.escape(stringified);
+                    attribute += `="${escaped}"`;
+                }
+                buffer.push(attribute);
             }
-            buffer.push(attribute);
         }
         // Self-closing tag's have no children implementation.
         if (!implementation) {

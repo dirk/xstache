@@ -12,6 +12,9 @@ import { compileToString, compileToComponent } from "./index.js";
 describe("compileToComponent", () => {
     test.for([
         ["attributes", "<div foo={top_level} />", <div foo="baz" />],
+        ["missing value for attribute", "<div foo={missing} />", <div />],
+        ["true value for attribute", "<div foo={boolean_true} />", <div foo />],
+        ["false value for attribute", "<div foo={boolean_false} />", <div />],
         [
             "contents in elements",
             "<span>foo {top_level}</span>",
@@ -61,6 +64,8 @@ describe("compileToComponent", () => {
         });
         const output = component({
             top_level: "baz",
+            boolean_true: true,
+            boolean_false: false,
             parent: {
                 array: [{ qux: "qux1" }, { qux: "qux2" }],
                 single: { qux: "qux" },
