@@ -26,6 +26,7 @@
     "devDependencies": {
         "@types/node": "^22",
         "@types/yargs": "^17",
+        "@vitest/coverage-v8": "catalog:",
         "react": "^19",
         "react-dom": "^19",
         "rimraf": "catalog:",
