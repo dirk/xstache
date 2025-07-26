@@ -6,6 +6,7 @@
         "test": "vitest --run"
     },
     "devDependencies": {
+        "@vitest/coverage-v8": "catalog:",
         "typescript": "catalog:",
         "vitest": "catalog:",
         "zx": "^8"
