@@ -50,6 +50,7 @@ export default async function (
             write: {
                 alias: "w",
                 default: false,
+                describe: "Write files in-place.",
                 type: "boolean",
             },
         });
