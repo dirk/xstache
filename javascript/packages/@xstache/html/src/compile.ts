@@ -77,16 +77,25 @@ export default class Compiler {
     }
 
     child(child: NonNullable<Child>): t.Statement {
+        let expression: t.Expression;
         if (child.type === "ElementNode") {
-            return this.element(child);
+            expression = this.element(child);
         } else if (child.type === "TextNode") {
-            return this.text(child);
+            expression = this.text(child);
         } else if (child.type === "SectionNode") {
-            return t.expressionStatement(this.section(child));
+            expression = this.section(child);
         } else if (child.type === "VariableNode") {
-            return t.expressionStatement(this.push(this.variable(child)));
+            expression = this.push(
+                t.logicalExpression(
+                    "??",
+                    this.variable(child),
+                    t.stringLiteral(""),
+                ),
+            );
+        } else {
+            throw new Error(`Unreachable: ${child?.type}`);
         }
-        throw new Error(`Unreachable: ${child?.type}`);
+        return t.expressionStatement(expression);
     }
 
     element(element: ElementNode) {
@@ -106,16 +115,14 @@ export default class Compiler {
                   [],
                   t.blockStatement(this.children(element.children)),
               );
-        return t.expressionStatement(
-            t.callExpression(
-                t.memberExpression(this.context(), t.identifier("element")),
-                [
-                    t.stringLiteral(opening.name.value),
-                    t.objectExpression(props),
-                    implementation,
-                    this.buffer(),
-                ],
-            ),
+        return t.callExpression(
+            t.memberExpression(this.context(), t.identifier("element")),
+            [
+                t.stringLiteral(opening.name.value),
+                t.objectExpression(props),
+                implementation,
+                this.buffer(),
+            ],
         );
     }
 
@@ -157,7 +164,7 @@ export default class Compiler {
     }
 
     text(text: TextNode) {
-        return t.expressionStatement(this.push(t.stringLiteral(text.raw)));
+        return this.push(t.stringLiteral(text.raw));
     }
 
     push(expression: t.Expression): t.Expression {

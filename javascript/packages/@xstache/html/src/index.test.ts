@@ -1,3 +1,4 @@
+import { Template } from "@xstache/html-runtime";
 import parse from "@xstache/parse";
 import { describe, expect, test } from "vitest";
 
@@ -12,7 +13,7 @@ describe("compileToString", () => {
               "foo": c.value(["bar"])
             }, () => {
               b.push("Hello ");
-              b.push(c.value(["name"]));
+              b.push(c.value(["name"]) ?? "");
             }, b);
             c.element("input", {}, undefined, b);
           }"
@@ -28,6 +29,54 @@ describe("compileToString", () => {
             });
           }"
         `);
+    });
+
+    test.for([
+        ["attributes", "<div foo={top_level} />", `<div foo="baz" />`],
+        [
+            "contents in elements",
+            "<span>foo {top_level}</span>",
+            `<span>foo baz</span>`,
+        ],
+        [
+            "missing contents for value",
+            "<span>foo {baz}</span>",
+            `<span>foo </span>`,
+        ],
+        [
+            "array contents in section",
+            "{#parent.array}{qux}{/parent.array}",
+            `qux1qux2`,
+        ],
+        [
+            "non-array contents in section",
+            "foo {#parent.single}{qux}{/parent.single}",
+            `foo qux`,
+        ],
+        [
+            "missing contents for section",
+            "foo {#missing.child}qux {qux}{/missing.child}",
+            `foo `,
+        ],
+        [
+            "context climbing in section",
+            "bar {#parent.single}{top_level}{/parent.single}",
+            `bar baz`,
+        ],
+    ])("compiles and renders with %s", ([_, input, expected]) => {
+        const nodeList = parse(input);
+        const code = compileToString(nodeList);
+        console.log(code);
+        const implementation = eval(`(${code})`);
+        const template = new Template(implementation);
+        const output = template.render({
+            top_level: "baz",
+            parent: {
+                array: [{ qux: "qux1" }, { qux: "qux2" }],
+                single: { qux: "qux" },
+            },
+        });
+        expect(output).toEqual(expected);
     });
 });
 
