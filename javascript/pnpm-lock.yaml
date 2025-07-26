@@ -6,9 +6,6 @@ settings:
 
 catalogs:
   default:
-    '@vitest/coverage-v8':
-      specifier: ^3
-      version: 3.2.4
     rimraf:
       specifier: ^6
       version: 6.0.1
@@ -24,7 +21,7 @@ importers:
   .:
     devDependencies:
       '@vitest/coverage-v8':
-        specifier: 'catalog:'
+        specifier: ^3
         version: 3.2.4(vitest@3.2.4(@types/node@22.16.5))
       prettier:
         specifier: ^3
@@ -91,9 +88,6 @@ importers:
       '@types/node':
         specifier: ^22
         version: 22.16.5
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@22.16.5))
       rimraf:
         specifier: 'catalog:'
         version: 6.0.1
@@ -125,9 +119,6 @@ importers:
         specifier: workspace:*
         version: link:../jsx
     devDependencies:
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@22.16.5))
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -165,9 +156,6 @@ importers:
       '@types/yargs':
         specifier: ^17
         version: 17.0.33
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@22.16.5))
       react:
         specifier: ^19
         version: 19.1.0
@@ -211,9 +199,6 @@ importers:
       '@types/node':
         specifier: ^22
         version: 22.16.5
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@22.16.5))
       rimraf:
         specifier: 'catalog:'
         version: 6.0.1
