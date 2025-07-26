@@ -1,0 +1,30 @@
+set quiet
+
+packages := "packages/xstache " + `echo packages/@xstache/*`
+
+[private]
+list:
+    @just --list
+
+dependencies:
+    pnpm install
+
+build:
+    pnpm run build
+
+format: dependencies
+    pnpm run prettier
+
+license:
+    for dir in {{packages}}; do \
+        cp ../LICENSE $dir/LICENSE; \
+    done
+
+test: build
+    pnpm test
+
+coverage: build
+    pnpm test --coverage
+
+coverage-index:
+    echo "file://{{source_directory()}}/coverage/index.html"
