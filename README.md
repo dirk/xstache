@@ -19,12 +19,26 @@ Isomorphic templating for the web. Xstache fuses concepts from JSX and Mustache 
 ### Supported Languages
 
 - [x] JavaScript
-    - [ ] Compile to a module or function that renders an HTML string
+    - [x] Compile to a module or function that renders an HTML string
     - [x] Compile to a component that renders JSX
 - [ ] PHP (coming soon)
 - [ ] Ruby (coming soon)
 
 ## Usage
+
+### HTML
+
+Install the package to transform Xstache to a JavaScript module that exports a renderable template:
+
+```sh
+npm install @xstache/html
+```
+
+Execute the CLI to compile your Xstache template(s) to JavaScript files:
+
+```sh
+npx xstache-html --write example.xstache
+```
 
 ### JSX
 
