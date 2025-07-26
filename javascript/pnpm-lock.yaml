@@ -69,18 +69,12 @@ importers:
       '@babel/types':
         specifier: ^7
         version: 7.28.2
-      '@xstache/ast':
-        specifier: workspace:*
-        version: link:../ast
       '@xstache/cli':
         specifier: workspace:*
         version: link:../cli
       '@xstache/html-runtime':
         specifier: workspace:*
         version: link:../html-runtime
-      '@xstache/parse':
-        specifier: workspace:*
-        version: link:../parse
       astring:
         specifier: ^1
         version: 1.9.0
@@ -88,6 +82,12 @@ importers:
       '@types/node':
         specifier: ^22
         version: 22.16.5
+      '@xstache/ast':
+        specifier: workspace:*
+        version: link:../ast
+      '@xstache/parse':
+        specifier: workspace:*
+        version: link:../parse
       rimraf:
         specifier: 'catalog:'
         version: 6.0.1
@@ -134,18 +134,12 @@ importers:
       '@babel/types':
         specifier: ^7
         version: 7.28.2
-      '@xstache/ast':
-        specifier: workspace:*
-        version: link:../ast
       '@xstache/cli':
         specifier: workspace:*
         version: link:../cli
       '@xstache/jsx-runtime':
         specifier: workspace:*
         version: link:../jsx-runtime
-      '@xstache/parse':
-        specifier: workspace:*
-        version: link:../parse
       astring:
         specifier: ^1
         version: 1.9.0
@@ -156,6 +150,12 @@ importers:
       '@types/yargs':
         specifier: ^17
         version: 17.0.33
+      '@xstache/ast':
+        specifier: workspace:*
+        version: link:../ast
+      '@xstache/parse':
+        specifier: workspace:*
+        version: link:../parse
       react:
         specifier: ^19
         version: 19.1.0
@@ -208,6 +208,34 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 3.2.4(@types/node@22.16.5)
+
+  packages/rollup-plugin-xstache:
+    dependencies:
+      '@rollup/pluginutils':
+        specifier: ^5
+        version: 5.2.0(rollup@4.45.3)
+      '@xstache/html':
+        specifier: workspace:*
+        version: link:../@xstache/html
+      '@xstache/jsx':
+        specifier: workspace:*
+        version: link:../@xstache/jsx
+      '@xstache/parse':
+        specifier: workspace:*
+        version: link:../@xstache/parse
+    devDependencies:
+      '@types/node':
+        specifier: ^22
+        version: 22.16.5
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.0.1
+      rollup:
+        specifier: ^4
+        version: 4.45.3
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.3
 
   packages/xstache:
     devDependencies:
@@ -445,6 +473,15 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
+
+  '@rollup/pluginutils@5.2.0':
+    resolution: {integrity: sha512-qWJ2ZTbmumwiLFomfzTyt5Kng4hwPi9rwCYN4SHb6eaRU1KNO4ccxINHr/VhH4GgPlt1XfSTLX2LBTme8ne4Zw==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
 
   '@rollup/rollup-android-arm-eabi@4.45.3':
     resolution: {integrity: sha512-8oQkCTve4H4B4JpmD2FV7fV2ZPTxJHN//bRhCqPUU8v6c5APlxteAXyc7BFaEb4aGpUzrPLU4PoAcGhwmRzZTA==}
@@ -703,6 +740,9 @@ packages:
   escalade@3.2.0:
     resolution: {integrity: sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==}
     engines: {node: '>=6'}
+
+  estree-walker@2.0.2:
+    resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
 
   estree-walker@3.0.3:
     resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
@@ -1290,6 +1330,14 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
+  '@rollup/pluginutils@5.2.0(rollup@4.45.3)':
+    dependencies:
+      '@types/estree': 1.0.8
+      estree-walker: 2.0.2
+      picomatch: 4.0.3
+    optionalDependencies:
+      rollup: 4.45.3
+
   '@rollup/rollup-android-arm-eabi@4.45.3':
     optional: true
 
@@ -1538,6 +1586,8 @@ snapshots:
       '@esbuild/win32-x64': 0.25.8
 
   escalade@3.2.0: {}
+
+  estree-walker@2.0.2: {}
 
   estree-walker@3.0.3:
     dependencies:
