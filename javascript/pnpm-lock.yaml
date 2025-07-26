@@ -23,9 +23,15 @@ importers:
 
   .:
     devDependencies:
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 3.2.4(vitest@3.2.4(@types/node@22.16.5))
       prettier:
         specifier: ^3
         version: 3.6.2
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.4(@types/node@22.16.5)
 
   packages/@xstache/ast:
     devDependencies:
