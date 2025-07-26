@@ -9,3 +9,5 @@ coverage:
     patch:
       default:
         informational: true
+fixes:
+  - "/home/runner/work/xstache/xstache/::"
