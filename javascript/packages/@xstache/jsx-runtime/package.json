@@ -17,6 +17,8 @@
         "build": "rimraf dist && tsc"
     },
     "devDependencies": {
+        "react": "^18",
+        "react-dom": "^18",
         "rimraf": "catalog:",
         "typescript": "catalog:"
     }
