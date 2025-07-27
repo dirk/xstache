@@ -48,7 +48,7 @@ class Context {
     public element(
         name: string,
         attributes: Record<string, any>,
-        implementation: () => void | undefined,
+        implementation: (() => void) | undefined,
         buffer: StringBuffer,
     ) {
         buffer.push(`<${name}`);
