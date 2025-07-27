@@ -21,9 +21,6 @@ export default function variable(
 
     whitespace(reader);
     const ownKey = key(reader);
-    if (!ownKey) {
-        throw new Error(`Expected key, got '${reader.peek()}'`);
-    }
 
     const char = reader.read();
     if (char !== "}") {
