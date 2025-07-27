@@ -83,7 +83,7 @@ export default async function (
         const successor = next();
 
         const nodeList = parse(source);
-        const outputSource = compileToString(nodeList);
+        const compiledSource = compileToString(nodeList);
 
         if (parsed.write) {
             const outputFile = getOutputFile(file, extension);
@@ -96,18 +96,18 @@ export default async function (
                 }
             }
 
-            if (outputSource === existingOutputSource) {
+            if (compiledSource === existingOutputSource) {
                 console.log(`${chalk.dim(file)} (unchanged)`);
             } else {
-                await writeFile(outputFile, outputSource);
+                await writeFile(outputFile, compiledSource);
                 console.log(file);
             }
         } else {
-            console.log(outputSource);
+            console.log(compiledSource);
         }
 
         await successor;
     }
 
-    next();
+    return next();
 }
