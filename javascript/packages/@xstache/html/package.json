@@ -20,16 +20,16 @@
     },
     "devDependencies": {
         "@types/node": "^22",
+        "@xstache/ast": "workspace:*",
+        "@xstache/parse": "workspace:*",
         "rimraf": "catalog:",
         "typescript": "catalog:",
         "vitest": "catalog:",
         "zx": "^8"
     },
     "peerDependencies": {
-        "@xstache/ast": "workspace:*",
         "@xstache/cli": "workspace:*",
-        "@xstache/html-runtime": "workspace:*",
-        "@xstache/parse": "workspace:*"
+        "@xstache/html-runtime": "workspace:*"
     },
     "dependencies": {
         "@babel/types": "^7",

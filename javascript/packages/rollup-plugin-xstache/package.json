@@ -1,0 +1,41 @@
+{
+    "name": "rollup-plugin-xstache",
+    "version": "0.0.1",
+    "description": "Rollup plugin for Xstache templates",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dirk/xstache.git"
+    },
+    "homepage": "https://github.com/dirk/xstache",
+    "license": "BSD-2-Clause",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "rimraf dist && tsc"
+    },
+    "dependencies": {
+        "@rollup/pluginutils": "^5"
+    },
+    "devDependencies": {
+        "@types/node": "^22",
+        "react": "^18",
+        "react-dom": "^18",
+        "rimraf": "catalog:",
+        "rollup": "^4",
+        "typescript": "catalog:"
+    },
+    "peerDependencies": {
+        "rollup": ">=2.0.0",
+        "@xstache/html": "workspace:*",
+        "@xstache/jsx": "workspace:*",
+        "@xstache/parse": "workspace:*"
+    }
+}
