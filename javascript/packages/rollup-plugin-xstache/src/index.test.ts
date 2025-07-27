@@ -1,3 +1,4 @@
+import { renderToString } from "react-dom/server";
 import { rollup, type RollupBuild } from "rollup";
 import { beforeAll, describe, expect, test } from "vitest";
 
@@ -36,6 +37,33 @@ describe("xstacheHtml", () => {
     test("renders", () => {
         expect(render({ name: "World" })).toMatchInlineSnapshot(
             `"<div>Hello World</div>"`,
+        );
+    });
+});
+
+describe("xstacheJsx", () => {
+    let render: (data: any) => string;
+
+    beforeAll(async () => {
+        const bundle = await rollup({
+            input: "__tests__/test.jsx",
+            plugins: [xstacheJsx()],
+            external: ["react/jsx-runtime", "@xstache/jsx-runtime"],
+            jsx: "react",
+        });
+        render = await generateAndEvaluate(bundle);
+    });
+
+    test("renders", () => {
+        const element = render({ name: "World" });
+        expect(element).toMatchInlineSnapshot(`
+          <div>
+            Hello 
+            World
+          </div>
+        `);
+        expect(renderToString(element)).toMatchInlineSnapshot(
+            `"<div>Hello <!-- -->World</div>"`,
         );
     });
 });

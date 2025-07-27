@@ -26,6 +26,8 @@
     },
     "devDependencies": {
         "@types/node": "^22",
+        "react": "^18",
+        "react-dom": "^18",
         "rimraf": "catalog:",
         "rollup": "^4",
         "typescript": "catalog:"
