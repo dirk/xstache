@@ -28,7 +28,7 @@ export default class StringReader {
         if (this.eof()) {
             return undefined;
         }
-        return count <= 1
+        return count === 1
             ? this.input[this.#index]
             : this.input.slice(this.#index, this.#index + count);
     }
@@ -38,19 +38,19 @@ export default class StringReader {
             return undefined;
         }
         const char = this.input[this.#index];
+        this.#index++;
         if (char === "\n") {
             this.line++;
             this.column = 1;
         } else {
             this.column++;
         }
-        this.#index++;
         return char;
     }
 
     public readWhile(predicate: (char: string) => boolean): string {
         let result = "";
-        while (!this.eof() && predicate(this.peek()!)) {
+        while (!this.eof() && predicate(this.input[this.#index])) {
             result += this.read()!;
         }
         return result;

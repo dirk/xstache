@@ -1,36 +1,37 @@
 import { KeyNode } from "@xstache/ast";
 
 import type StringReader from "./reader.js";
-import { whitespace } from "./syntax.js";
+import { isWhitespace, whitespace } from "./syntax.js";
 
-export default function key(reader: StringReader): KeyNode[] | undefined {
+export default function key(reader: StringReader): KeyNode[] {
     let head = one(reader);
     if (!head) {
         throw new Error(`Unexpected character: '${reader.peek()}'`);
     }
 
-    let keyComponents = [head];
+    let parts = [head];
     while (true) {
         whitespace(reader);
-        const char = reader.peek();
-        if (char === ".") {
+        if (reader.peek() === ".") {
             reader.read();
             whitespace(reader);
             const next = one(reader);
             if (!next) {
                 throw new Error(`Unexpected character: '${reader.peek()}'`);
             }
-            keyComponents.push(next);
+            parts.push(next);
         } else {
             break;
         }
     }
 
-    return keyComponents;
+    return parts;
 }
 
 function one(reader: StringReader): KeyNode | undefined {
-    const value = reader.readWhile((char) => !/[\s.}]/.test(char));
+    const value = reader.readWhile(
+        (char) => !isWhitespace(char) && char !== "." && char !== "}",
+    );
     if (value === "") {
         return undefined;
     }

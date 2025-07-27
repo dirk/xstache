@@ -30,6 +30,8 @@ describe("componentFactory", () => {
         const element = (
             <Component items={[{ name: "Item 1" }, { name: "Item 2" }]} />
         );
-        expect(renderToString(element)).toMatchInlineSnapshot(`"<span>Item 1</span><span>Item 2</span>"`);
+        expect(renderToString(element)).toMatchInlineSnapshot(
+            `"<span>Item 1</span><span>Item 2</span>"`,
+        );
     });
 });

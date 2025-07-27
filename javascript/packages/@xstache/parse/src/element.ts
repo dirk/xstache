@@ -77,11 +77,10 @@ function openingElement(reader: StringReader): ElementOpeningNode | undefined {
         reader.read();
     }
 
-    const char = reader.peek();
+    const char = reader.read();
     if (char !== ">") {
         throw new Error(`Expected '>', got '${char}' at ${reader.location}`);
     }
-    reader.read();
 
     return {
         type: "ElementOpeningNode",
@@ -104,11 +103,11 @@ function closingElement(reader: StringReader): ElementClosingNode | undefined {
     }
 
     whitespace(reader);
-    const char = reader.peek();
+    const location = reader.location;
+    const char = reader.read();
     if (char !== ">") {
-        throw new Error(`Expected '>', got '${char}' at ${reader.location}`);
+        throw new Error(`Expected '>', got '${char}' at ${location}`);
     }
-    reader.read();
 
     return {
         type: "ElementClosingNode",
