@@ -27,19 +27,20 @@ class Context {
 
     public section(
         keys: string[],
-        implementation: (context: Context) => any,
+        implementation: (context: Context, index: number) => any,
         jsxRuntime: JsxRuntime,
     ) {
         const data = this.value(keys);
         if (!data) {
             return undefined;
         }
-        const render = (data: any) => implementation(new Context(data, this));
+        const render = (data: any, index: number) =>
+            implementation(new Context(data, this), index);
         return Array.isArray(data)
             ? jsxRuntime.jsx(jsxRuntime.Fragment, {
                   children: data.map(render),
               })
-            : render(data);
+            : render(data, 0);
     }
 }
 
