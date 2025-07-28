@@ -33,3 +33,21 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
+  php:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "php/${{ matrix.package }}"
+    strategy:
+      matrix:
+        package:
+          - xstache
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+      - uses: ramsey/composer-install@v3
+        with:
+          working-directory: "php/${{ matrix.package }}"
+      - run: "./vendor/bin/phpunit tests"
