@@ -32,7 +32,6 @@ jobs:
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          verbose: true
   php:
     runs-on: ubuntu-latest
     defaults:
@@ -50,4 +49,7 @@ jobs:
       - uses: ramsey/composer-install@v3
         with:
           working-directory: "php/${{ matrix.package }}"
-      - run: "./vendor/bin/phpunit tests"
+      - run: "./vendor/bin/phpunit --coverage-filter src --coverage-clover coverage.xml tests"
+      - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
