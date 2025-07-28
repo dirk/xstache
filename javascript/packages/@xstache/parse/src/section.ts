@@ -38,9 +38,8 @@ function openingSection(
     if (peek !== "{#") {
         return undefined;
     }
-    // Consume the opening '{' and '#'.
-    reader.read();
-    reader.read();
+    reader.read(); // Consume the '{'
+    reader.read(); // and the '#'.
 
     whitespace(reader);
     const ownKey = key(reader);
