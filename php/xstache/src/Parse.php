@@ -105,7 +105,7 @@ class Parse
         $name = self::identifier($reader);
         if (!$name) {
             throw new ParseException(
-                'Expected an identifier for the element name',
+                sprintf("Expected identifier, got '%s'", $reader->peek() ?? self::EOF),
                 $reader->location(),
             );
         }
@@ -331,7 +331,7 @@ class Parse
         $char = $reader->read();
         if ($char !== '}') {
             throw new ParseException(
-                sprintf("Expected '}', got '%s'", $char),
+                sprintf("Expected '}', got '%s'", $char ?? self::EOF),
                 $reader->location(),
             );
         }
