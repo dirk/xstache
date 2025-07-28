@@ -2,4 +2,6 @@ opening:
     name: { value: div }
     attributes: {  }
     self_closing: false
+closing:
+    name: { value: div }
 children: null

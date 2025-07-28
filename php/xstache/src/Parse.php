@@ -6,6 +6,8 @@ namespace Xstache;
 
 class Parse
 {
+    public const EOF = 'EOF';
+
     public static function parse(string $source)
     {
         $reader = new SourceReader($source);
@@ -47,6 +49,11 @@ class Parse
             return $element;
         }
 
+        $section = self::section($reader);
+        if ($section) {
+            return $section;
+        }
+
         $variable = self::variable($reader);
         if ($variable) {
             return $variable;
@@ -65,7 +72,7 @@ class Parse
         if ($opening->self_closing) {
             return new Ast\ElementNode(
                 $opening,
-                // null,
+                null,
                 null,
             );
         } else {
@@ -81,7 +88,7 @@ class Parse
 
             return new Ast\ElementNode(
                 $opening,
-                // closing,
+                $closing,
                 $children,
             );
         }
@@ -216,6 +223,94 @@ class Parse
         return null;
     }
 
+    public static function section(SourceReader $reader): Ast\SectionNode|null
+    {
+        $opening = self::openingSection($reader);
+        if (!$opening) {
+            return null;
+        }
+
+        $children = self::children($reader);
+
+        $closing = self::closingSection($reader);
+        if (!$closing) {
+            throw new ParseException(
+                'Expected closing section tag',
+                $reader->location(),
+            );
+        }
+
+        return new Ast\SectionNode(
+            $opening,
+            $closing,
+            $children,
+        );
+    }
+
+    private static function openingSection(SourceReader $reader): Ast\SectionOpeningNode|null
+    {
+        $peek = $reader->peek(2);
+        if ($peek !== '{#') {
+            return null;
+        }
+        $reader->read(); // Consume the '{'
+        $reader->read(); // and the '#'.
+
+        self::whitespace($reader);
+        $key = self::key($reader);
+        if (!$key) {
+            throw new ParseException(
+                sprintf(
+                    "Unexpected character '%s' while parsing section key",
+                    $reader->peek() ?? self::EOF,
+                ),
+                $reader->location(),
+            );
+        }
+
+        $char = $reader->read();
+        if ($char !== '}') {
+            throw new ParseException(
+                sprintf("Expected '}', got '%s'", $char),
+                $reader->location(),
+            );
+        }
+
+        return new Ast\SectionOpeningNode($key);
+    }
+
+    private static function closingSection(SourceReader $reader): Ast\SectionClosingNode|null
+    {
+        $peek = $reader->peek(2);
+        if ($peek !== '{/') {
+            return null;
+        }
+        $reader->read(); // Consume the '{'
+        $reader->read(); // and the '#'.
+
+        self::whitespace($reader);
+        $key = self::key($reader);
+        if (!$key) {
+            throw new ParseException(
+                sprintf(
+                    "Unexpected character '%s' while parsing section key",
+                    $reader->peek() ?? self::EOF,
+                ),
+                $reader->location(),
+            );
+        }
+
+        $char = $reader->read();
+        if ($char !== '}') {
+            throw new ParseException(
+                sprintf("Expected '}', got '%s'", $char),
+                $reader->location(),
+            );
+        }
+
+        return new Ast\SectionClosingNode($key);
+    }
+
     public static function variable(SourceReader $reader): Ast\VariableNode|null
     {
         $peek = $reader->peek(2);
@@ -263,7 +358,7 @@ class Parse
             throw new ParseException(
                 sprintf(
                     "Unexpected character '%s' while parsing key",
-                    $reader->peek(),
+                    $reader->peek() ?? self::EOF,
                 ),
                 $reader->location(),
             );
@@ -280,7 +375,7 @@ class Parse
                     throw new ParseException(
                         sprintf(
                             "Unexpected character '%s' while parsing key",
-                            $reader->peek(),
+                            $reader->peek() ?? self::EOF,
                         ),
                         $reader->location(),
                     );
