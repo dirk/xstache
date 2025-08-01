@@ -136,7 +136,7 @@ class Parse
         $char = $reader->read();
         if ($char !== '>') {
             throw new ParseException(
-                sprintf("Expected '>', got '%s'", $char),
+                sprintf("Expected '>', got '%s'", $char ?? self::EOF),
                 $location,
             );
         }
@@ -159,7 +159,7 @@ class Parse
         $name = self::identifier($reader);
         if (!$name) {
             throw new ParseException(
-                'Expected an identifier for the closing element name',
+                sprintf("Expected identifier, got '%s'", $reader->peek() ?? self::EOF),
                 $reader->location(),
             );
         }
@@ -258,20 +258,11 @@ class Parse
 
         self::whitespace($reader);
         $key = self::key($reader);
-        if (!$key) {
-            throw new ParseException(
-                sprintf(
-                    "Unexpected character '%s' while parsing section key",
-                    $reader->peek() ?? self::EOF,
-                ),
-                $reader->location(),
-            );
-        }
 
         $char = $reader->read();
         if ($char !== '}') {
             throw new ParseException(
-                sprintf("Expected '}', got '%s'", $char),
+                sprintf("Expected '}', got '%s'", $char ?? self::EOF),
                 $reader->location(),
             );
         }
@@ -290,20 +281,11 @@ class Parse
 
         self::whitespace($reader);
         $key = self::key($reader);
-        if (!$key) {
-            throw new ParseException(
-                sprintf(
-                    "Unexpected character '%s' while parsing section key",
-                    $reader->peek() ?? self::EOF,
-                ),
-                $reader->location(),
-            );
-        }
 
         $char = $reader->read();
         if ($char !== '}') {
             throw new ParseException(
-                sprintf("Expected '}', got '%s'", $char),
+                sprintf("Expected '}', got '%s'", $char ?? self::EOF),
                 $reader->location(),
             );
         }
@@ -339,7 +321,7 @@ class Parse
         return new Ast\VariableNode($key);
     }
 
-    public static function key(SourceReader $reader): array|null
+    public static function key(SourceReader $reader): array
     {
         $one = function (SourceReader $reader): Ast\KeyNode|null {
             $value = $reader->readWhile(fn($char) => (

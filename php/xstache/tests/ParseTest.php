@@ -111,10 +111,22 @@ class ParseTest extends TestCase
         Parse::element(new SourceReader('<div></div class>'));
     }
 
+    public function testOpeningElementIncomplete(): void
+    {
+        $this->expectExceptionMessage("Expected '>', got 'EOF' at 1:5");
+        Parse::element(new SourceReader('<div'));
+    }
+
     public function testOpeningElementNotAnIdentifier(): void
     {
         $this->expectExceptionMessage("Expected identifier, got '1' at 1:2");
         Parse::element(new SourceReader('<1div></1div>'));
+    }
+
+    public function testClosingElementNotAnIdentifier(): void
+    {
+        $this->expectExceptionMessage("Expected identifier, got '$' at 1:8");
+        Parse::element(new SourceReader('<foo></$>'));
     }
 
     public function testSection(): void
@@ -134,6 +146,24 @@ class ParseTest extends TestCase
         // TODO: Improve this to something like "Expected '{/foo}', got 'EOF' at 1:8".
         $this->expectExceptionMessage("Expected closing section tag at 1:10");
         Parse::section(new SourceReader('{#foo}bar'));
+    }
+
+    public function testOpeningSectionIncomplete(): void
+    {
+        $this->expectExceptionMessage("Expected '}', got 'EOF' at 1:6");
+        Parse::section(new SourceReader('{#foo'));
+    }
+
+    public function testOpeningSectionMissingKey(): void
+    {
+        $this->expectExceptionMessage("Unexpected character '}' while parsing key at 1:3");
+        Parse::section(new SourceReader('{#}'));
+    }
+
+    public function testClosingSectionIncomplete(): void
+    {
+        $this->expectExceptionMessage("Expected '}', got 'EOF' at 1:12");
+        Parse::section(new SourceReader('{#foo}{/foo'));
     }
 
     public function testVariableUnclosed(): void
