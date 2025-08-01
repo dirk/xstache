@@ -1,0 +1,15 @@
+XR::element(
+    $context, 
+    'strong', 
+    [], 
+    function ($context) {
+        return 'Heading';
+    }).
+XR::variable($context, ['subhead']).
+XR::element(
+    $context, 
+    'p', 
+    [], 
+    function ($context) {
+        return 'Paragraph';
+    })

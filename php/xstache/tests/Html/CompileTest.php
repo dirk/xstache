@@ -21,6 +21,15 @@ class CompileTest extends TestCase
         EOD));
     }
 
+    public function testCompileMultipleChildren(): void
+    {
+        $this->assertMatchesTextSnapshot(self::compile(<<<'EOD'
+            <strong>Heading</strong>
+            {subhead}
+            <p>Paragraph</p>
+        EOD));
+    }
+
     private static function compile(string $source): string
     {
         $node_list = Parse::parse($source);

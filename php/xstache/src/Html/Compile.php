@@ -125,9 +125,6 @@ class Compile
     }
 
     public static function indent(int $indent): string{
-        if ($indent === 0) {
-            return '';
-        }
         return "\n" . str_repeat(' ', $indent * 4);
     }
 }
