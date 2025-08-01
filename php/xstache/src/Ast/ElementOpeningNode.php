@@ -6,6 +6,11 @@ namespace Xstache\Ast;
 
 class ElementOpeningNode
 {
+    /**
+     * @param IdentifierNode $name
+     * @param AttributeNode[] $attributes
+     * @param bool $self_closing
+     */
     public function __construct(
         public readonly IdentifierNode $name,
         public readonly array $attributes,
