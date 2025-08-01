@@ -23,8 +23,8 @@ license:
 test: build
     pnpm test
 
-coverage: build
+coverage-html: build
     pnpm test --coverage
 
-coverage-index:
+coverage-index-html:
     echo "file://{{source_directory()}}/coverage/index.html"

@@ -14,6 +14,6 @@ license: javascript::license
 
 test: javascript::test
 
-coverage: javascript::coverage
+coverage-html: javascript::coverage-html
     @echo "Coverage reports:"
-    @echo "- JavaScript:" `just javascript/coverage-index`
+    @echo "- JavaScript:" `just javascript/coverage-index-html`
