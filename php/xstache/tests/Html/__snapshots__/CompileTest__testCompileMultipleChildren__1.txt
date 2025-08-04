@@ -1,15 +1,18 @@
-XR::element(
-    $context, 
-    'strong', 
-    [], 
-    function ($context) {
-        return 'Heading';
-    }).
-XR::variable($context, ['subhead']).
-XR::element(
-    $context, 
-    'p', 
-    [], 
-    function ($context) {
-        return 'Paragraph';
-    })
+use \Xstache\Html\Runtime as XR;
+return function ($context) {
+    return XR::element(
+            $context, 
+            'strong', 
+            [], 
+            function ($context) {
+                return 'Heading';
+            }).
+        XR::variable($context, ['subhead']).
+        XR::element(
+            $context, 
+            'p', 
+            [], 
+            function ($context) {
+                return 'Paragraph';
+            });
+};

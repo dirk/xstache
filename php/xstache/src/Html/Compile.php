@@ -9,12 +9,31 @@ use Xstache\Ast;
 
 class Compile
 {
-    public static function compile(Ast\NodeList $node_list): string
-    {
-        return self::children($node_list->children);
+    public function __construct(
+        private readonly ?string $indent_step,
+    ) {
     }
 
-    public static function children(Ast\Child|array|null $children, int $indent = 0): string
+    public static function compile(
+        Ast\NodeList $node_list,
+        $indent_step = '    ',
+    ): string {
+        return (new self($indent_step))->nodeList($node_list);
+    }
+
+    public function nodeList(Ast\NodeList $node_list): string
+    {
+        $indent = $this->indent(0);
+        return sprintf(
+            'use \\Xstache\\Html\\Runtime as XR;%sreturn function ($context) {%sreturn %s;%s};',
+            $indent,
+            $this->indent(1),
+            $this->children($node_list->children, 2),
+            $indent,
+        );
+    }
+
+    public function children(Ast\Child|array|null $children, int $indent = 0): string
     {
         if ($children === null) {
             return "''";
@@ -26,29 +45,29 @@ class Compile
             foreach ($children as $key => $child) {
                 $output[] = sprintf(
                     '%s%s',
-                    $key !== $first ? self::indent($indent) : '',
-                    self::child($child, $indent + 1),
+                    $key !== $first ? $this->indent($indent) : '',
+                    $this->child($child, $indent + 1),
                 );
             }
             return implode('.', $output);
         }
 
-        return self::child($children, $indent + 1);
+        return $this->child($children, $indent + 1);
     }
 
-    public static function child(Ast\Child $child, int $indent = 0): string
+    public function child(Ast\Child $child, int $indent = 0): string
     {
         if ($child instanceof Ast\ElementNode) {
-            return self::element($child, $indent);
+            return $this->element($child, $indent);
 
         } else if ($child instanceof Ast\SectionNode) {
             throw new \RuntimeException('Unreachable');
 
         } else if ($child instanceof Ast\TextNode) {
-            return self::text($child);
+            return $this->text($child);
 
         } else if ($child instanceof Ast\VariableNode) {
-            return self::variable($child);
+            return $this->variable($child);
 
         } else {
             throw new LogicException(sprintf(
@@ -58,40 +77,43 @@ class Compile
         }
     }
 
-    public static function element(Ast\ElementNode $element, int $indent = 0): string
+    public function element(Ast\ElementNode $element, int $indent = 0): string
     {
         $name = $element->opening->name->value;
+        $self_closing = $element->opening->self_closing;
 
         $attributes = ['['];
         $last = array_key_last($element->opening->attributes);
         foreach ($element->opening->attributes as $key => $attribute) {
-            $attributes[] = self::indent($indent + 1);
+            $attributes[] = $this->indent($indent + 1);
             $attributes[] = var_export($attribute->name->value, true);
             $attributes[] = ' => ';
             $attributes[] = $attribute->value === null
                 ? 'true'
-                : self::variable($attribute->value);
+                : $this->variable($attribute->value);
             $attributes[] = ',';
             if ($key === $last) {
-                $attributes[] = self::indent($indent);
+                $attributes[] = $this->indent($indent);
             }
         }
         $attributes[] = ']';
         $attributes = implode('', $attributes);
 
-        $implementation = sprintf(
-            "function (%s) {%sreturn %s;%s}",
-            self::context(),
-            self::indent($indent + 1),
-            self::children($element->children, $indent + 2),
-            self::indent($indent),
-        );
+        $implementation = $self_closing
+            ? 'null'
+            : sprintf(
+                "function (%s) {%sreturn %s;%s}",
+                $this->context(),
+                $this->indent($indent + 1),
+                $this->children($element->children, $indent + 2),
+                $this->indent($indent),
+            );
 
-        $indent = self::indent($indent);
+        $indent = $this->indent($indent);
         return sprintf(
             'XR::element(%s%s, %s%s, %s%s, %s%s)',
             $indent,
-            self::context(),
+            $this->context(),
             $indent,
             var_export($name, true),
             $indent,
@@ -101,17 +123,17 @@ class Compile
         );
     }
 
-    public static function text(Ast\TextNode $text): string
+    public function text(Ast\TextNode $text): string
     {
         $escaped = htmlspecialchars($text->value, ENT_QUOTES, 'UTF-8');
         return var_export($escaped, true);
     }
 
-    public static function variable(Ast\VariableNode $variable): string
+    public function variable(Ast\VariableNode $variable): string
     {
         return sprintf(
             'XR::variable(%s, [%s])',
-            self::context(),
+            $this->context(),
             implode(', ', array_map(
                 fn(Ast\KeyNode $part) => var_export($part->value, true),
                 $variable->key,
@@ -119,12 +141,15 @@ class Compile
         );
     }
 
-    public static function context(): string
+    public function context(): string
     {
         return '$context';
     }
 
-    public static function indent(int $indent): string{
-        return "\n" . str_repeat(' ', $indent * 4);
+    public function indent(int $indent): string {
+        if (!$this->indent_step) {
+            return '';
+        }
+        return "\n" . str_repeat($this->indent_step, $indent);
     }
 }
