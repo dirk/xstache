@@ -23,11 +23,13 @@ jobs:
           node-version: "22.x"
           cache: pnpm
           cache-dependency-path: "javascript/pnpm-lock.yaml"
-      - run: "pnpm install --filter \"!@xstache/integration\" --filter \"!rollup-plugin-xstache\""
+      # Install and build only the core packages first.
+      - run: "pnpm install --filter \"@xstache/*\" --filter \"!@xstache/integration\""
       - run: "pnpm --recursive --filter \"@xstache/*\" run build"
-      # Run installation again now that necessary `dist` JavaScript files have
-      # been built.
+      # Run installation again now that necessary `dist` JavaScript CLI files (which peer packages
+      # in the workspace depend upon) have been built.
       - run: "pnpm install"
+      - run: "pnpm run build"
       - run: "pnpm test --coverage"
       - uses: codecov/codecov-action@v5
         with:
