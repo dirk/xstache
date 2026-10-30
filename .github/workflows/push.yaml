@@ -24,7 +24,7 @@ jobs:
           cache: pnpm
           cache-dependency-path: "javascript/pnpm-lock.yaml"
       - run: "pnpm install --filter \"!@xstache/integration\" --filter \"!rollup-plugin-xstache\""
-      - run: "pnpm run build"
+      - run: "pnpm --recursive --filter \"@xstache/*\" run build"
       # Run installation again now that necessary `dist` JavaScript files have
       # been built.
       - run: "pnpm install"
