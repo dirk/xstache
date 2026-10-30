@@ -2,6 +2,7 @@
 .vscode
 composer.lock
 coverage
+coverage.xml
 dist
 node_modules
 vendor
