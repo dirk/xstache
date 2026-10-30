@@ -1,18 +1,19 @@
-XR::element(
-    $context, 
-    'form', 
-    [
-        'action' => XR::variable($context, ['action']),
-        'method' => XR::variable($context, ['method']),
-    ], 
-    function ($context) {
-        return XR::element(
-                $context, 
-                'input', 
-                [
-                    'disabled' => true,
-                ], 
-                function ($context) {
-                    return '';
-                });
-    })
+use \Xstache\Html\Runtime as XR;
+return function ($context) {
+    return XR::element(
+            $context, 
+            'form', 
+            [
+                'action' => XR::variable($context, ['action']),
+                'method' => XR::variable($context, ['method']),
+            ], 
+            function ($context) {
+                return XR::element(
+                        $context, 
+                        'input', 
+                        [
+                            'disabled' => true,
+                        ], 
+                        null);
+            });
+};

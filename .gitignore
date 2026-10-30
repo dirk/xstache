@@ -1,6 +1,5 @@
 .DS_Store
 .vscode
-composer.lock
 coverage
 coverage.xml
 dist

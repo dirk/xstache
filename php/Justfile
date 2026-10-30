@@ -1,0 +1,24 @@
+set quiet
+
+packages := "xstache"
+
+[private]
+list:
+    @just --list
+
+test:
+    for dir in {{packages}}; do \
+        cd $dir && \
+            ./vendor/bin/phpunit tests; \
+    done
+
+coverage-html:
+    for dir in {{packages}}; do \
+        cd $dir && \
+            ./vendor/bin/phpunit --coverage-filter src --coverage-html coverage tests; \
+    done
+
+coverage-index-htmls:
+    for dir in {{packages}}; do \
+        echo "file://{{source_directory()}}/$dir/coverage/index.html"; \
+    done
