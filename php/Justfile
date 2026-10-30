@@ -6,6 +6,12 @@ packages := "xstache"
 list:
     @just --list
 
+test:
+    for dir in {{packages}}; do \
+        cd $dir && \
+            ./vendor/bin/phpunit tests; \
+    done
+
 coverage-html:
     for dir in {{packages}}; do \
         cd $dir && \
