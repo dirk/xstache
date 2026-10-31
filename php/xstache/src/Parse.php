@@ -12,6 +12,12 @@ class Parse
     {
         $reader = new SourceReader($source);
         $children = self::children($reader);
+        if (!$reader->eof()) {
+            throw new ParseException(
+                sprintf("Unparsed input (stopped at '%s')", $reader->peek()),
+                $reader->location(),
+            );
+        }
         return new Ast\NodeList($children);
     }
 
@@ -24,7 +30,7 @@ class Parse
             if ($child === null) {
                 break;
             }
-            
+
             if (!$children) {
                 $children = $child;
             } else if (is_array($children)) {
@@ -68,7 +74,7 @@ class Parse
         if (!$opening) {
             return null;
         }
-        
+
         if ($opening->self_closing) {
             return new Ast\ElementNode(
                 $opening,
