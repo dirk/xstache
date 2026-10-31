@@ -14,25 +14,33 @@ class CompileTest extends TestCase
 
     public function testCompile(): void
     {
-        $this->assertMatchesTextSnapshot(self::compile(<<<'EOD'
+        $this->assertMatchesCompiledSnapshot(<<<'EOD'
             <form action={action} method={method}>
                 <input disabled />
             </form>
-        EOD));
+        EOD);
     }
 
     public function testCompileMultipleChildren(): void
     {
-        $this->assertMatchesTextSnapshot(self::compile(<<<'EOD'
+        $this->assertMatchesCompiledSnapshot(<<<'EOD'
             <strong>Heading</strong>
             {subhead}
             <p>Paragraph</p>
-        EOD));
+        EOD);
     }
 
-    private static function compile(string $source): string
+    public function testCompileSections(): void
+    {
+        $this->assertMatchesCompiledSnapshot(<<<'EOD'
+            {#conditional}True{/conditional}
+        EOD);
+    }
+
+    private function assertMatchesCompiledSnapshot(string $source): void
     {
         $node_list = Parse::parse($source);
-        return Compile::compile($node_list);
+        $compiled = Compile::compile($node_list);
+        $this->assertMatchesTextSnapshot($compiled);
     }
 }

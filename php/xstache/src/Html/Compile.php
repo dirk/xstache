@@ -61,7 +61,7 @@ class Compile
             return $this->element($child, $indent);
 
         } else if ($child instanceof Ast\SectionNode) {
-            throw new \RuntimeException('Unreachable');
+            return $this->section($child, $indent);
 
         } else if ($child instanceof Ast\TextNode) {
             return $this->text($child);
@@ -138,6 +138,27 @@ class Compile
                 fn(Ast\KeyNode $part) => var_export($part->value, true),
                 $variable->key,
             )),
+        );
+    }
+
+    public function section(Ast\SectionNode $section, int $indent = 0): string
+    {
+        $implementation = sprintf(
+            "function (%s) {%sreturn %s;%s}",
+            $this->context(),
+            $this->indent($indent + 1),
+            $this->children($section->children, $indent + 2),
+            $this->indent($indent),
+        );
+
+        return sprintf(
+            'XR::section(%s, [%s], %s)',
+            $this->context(),
+            implode(', ', array_map(
+                fn(Ast\KeyNode $part) => var_export($part->value, true),
+                $section->opening->key,
+            )),
+            $implementation,
         );
     }
 
