@@ -229,9 +229,11 @@ class Parse
         return null;
     }
 
-    public static function section(SourceReader $reader): Ast\SectionNode|null
+    public static function section(SourceReader $reader): Ast\SectionNode|Ast\InvertedSectionNode|null
     {
-        $opening = self::openingSection($reader);
+        $inverted = false;
+
+        $opening = self::openingSection($reader, $inverted);
         if (!$opening) {
             return null;
         }
@@ -246,21 +248,30 @@ class Parse
             );
         }
 
-        return new Ast\SectionNode(
-            $opening,
-            $closing,
-            $children,
-        );
+        return $inverted
+            ? new Ast\InvertedSectionNode(
+                $opening,
+                $closing,
+                $children,
+            )
+            : new Ast\SectionNode(
+                $opening,
+                $closing,
+                $children,
+            );
     }
 
-    private static function openingSection(SourceReader $reader): Ast\SectionOpeningNode|null
+    private static function openingSection(SourceReader $reader, bool &$inverted): Ast\SectionOpeningNode|null
     {
         $peek = $reader->peek(2);
-        if ($peek !== '{#') {
+        if ($peek !== '{#' && $peek !== '{^') {
             return null;
         }
         $reader->read(); // Consume the '{'
-        $reader->read(); // and the '#'.
+        $char = $reader->read(); // and the '#' or '^'.
+        if ($char === '^') {
+            $inverted = true;
+        }
 
         self::whitespace($reader);
         $key = self::key($reader);
