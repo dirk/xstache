@@ -51,6 +51,21 @@ class Runtime
         return implode('', $buffer);
     }
 
+    public static function section(
+        Context $context,
+        array $keys,
+        $implementation
+    ): string {
+        $value = $context->value($keys);
+        if (!$value) {
+            return '';
+        }
+        $render = fn($data) => $implementation(new Context($data, $context));
+        return is_array($value)
+            ? implode('', array_map($render, $value))
+            : $render($value);
+    }
+
     private static function coerceToString($input): string {
         return $input ? (string)$input : '';
     }

@@ -19,6 +19,19 @@ class TemplateTest extends TestCase
         EOD)->render([]));
     }
 
+    public function testSection(): void
+    {
+        $this->assertMatchesTextSnapshot(self::template(<<<'EOD'
+            {#truthy}truthy{/truthy}
+            {#falsey}falsey{/falsey}
+            {#repeated}repeated{/repeated}
+        EOD)->render([
+            'truthy' => true,
+            'falsey' => false,
+            'repeated' => [1, 2, 3],
+        ]));
+    }
+
     private static function template(string $source): Template
     {
         $node_list = Parse::parse($source);
