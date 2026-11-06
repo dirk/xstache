@@ -63,6 +63,9 @@ class Compile
         } else if ($child instanceof Ast\SectionNode) {
             return $this->section($child, $indent);
 
+        } else if ($child instanceof Ast\InvertedSectionNode) {
+            return $this->invertedSection($child, $indent);
+
         } else if ($child instanceof Ast\TextNode) {
             return $this->text($child);
 
@@ -143,23 +146,12 @@ class Compile
 
     public function section(Ast\SectionNode $section, int $indent = 0): string
     {
-        $implementation = sprintf(
-            "function (%s) {%sreturn %s;%s}",
-            $this->context(),
-            $this->indent($indent + 1),
-            $this->children($section->children, $indent + 2),
-            $this->indent($indent),
-        );
+        return $this->sectionTemplate($section, 'section', $indent);
+    }
 
-        return sprintf(
-            'XR::section(%s, [%s], %s)',
-            $this->context(),
-            implode(', ', array_map(
-                fn(Ast\KeyNode $part) => var_export($part->value, true),
-                $section->opening->key,
-            )),
-            $implementation,
-        );
+    public function invertedSection(Ast\InvertedSectionNode $section, int $indent = 0): string
+    {
+        return $this->sectionTemplate($section, 'invertedSection', $indent);
     }
 
     public function context(): string
@@ -172,5 +164,30 @@ class Compile
             return '';
         }
         return "\n" . str_repeat($this->indent_step, $indent);
+    }
+
+    private function sectionTemplate(
+        Ast\SectionLike $section,
+        string $method,
+        int $indent = 0,
+    ): string {
+        $implementation = sprintf(
+            "function (%s) {%sreturn %s;%s}",
+            $this->context(),
+            $this->indent($indent + 1),
+            $this->children($section->getChildren(), $indent + 2),
+            $this->indent($indent),
+        );
+
+        return sprintf(
+            'XR::%s(%s, [%s], %s)',
+            $method,
+            $this->context(),
+            implode(', ', array_map(
+                fn(Ast\KeyNode $part) => var_export($part->value, true),
+                $section->getKey(),
+            )),
+            $implementation,
+        );
     }
 }

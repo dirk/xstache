@@ -34,6 +34,7 @@ class CompileTest extends TestCase
     {
         $this->assertMatchesCompiledSnapshot(<<<'EOD'
             {#conditional}True{/conditional}
+            {^conditional}False{/conditional}
         EOD);
     }
 

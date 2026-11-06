@@ -54,12 +54,32 @@ class Runtime
     public static function section(
         Context $context,
         array $keys,
-        $implementation
+        $implementation,
     ): string {
         $value = $context->value($keys);
         if (!$value) {
             return '';
         }
+        return self::repeat($context, $value, $implementation);
+    }
+
+    public static function invertedSection(
+        Context $context,
+        array $keys,
+        $implementation,
+    ): string {
+        $value = $context->value($keys);
+        if ($value) {
+            return '';
+        }
+        return self::repeat($context, $value, $implementation);
+    }
+
+    private static function repeat(
+        Context $context,
+        mixed $value,
+        $implementation,
+    ): string {
         $render = fn($data) => $implementation(new Context($data, $context));
         return is_array($value)
             ? implode('', array_map($render, $value))
