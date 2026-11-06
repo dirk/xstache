@@ -1,0 +1,9 @@
+use \Xstache\Html\Runtime as XR;
+return function ($context) {
+    return XR::section($context, ['conditional'], function ($context) {
+                return 'True';
+            }).
+        XR::invertedSection($context, ['conditional'], function ($context) {
+                return 'False';
+            });
+};

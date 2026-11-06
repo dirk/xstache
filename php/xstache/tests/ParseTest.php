@@ -139,6 +139,14 @@ class ParseTest extends TestCase
             ),
             Parse::section(new SourceReader('{#foo}bar{/foo}')),
         );
+        $this->assertEquals(
+            new Ast\InvertedSectionNode(
+                new Ast\SectionOpeningNode([new Ast\KeyNode('bar')]),
+                new Ast\SectionClosingNode([new Ast\KeyNode('bar')]),
+                new Ast\TextNode('foo'),
+            ),
+            Parse::section(new SourceReader('{^bar}foo{/bar}')),
+        );
     }
 
     public function testSectionMissingClosingTag(): void

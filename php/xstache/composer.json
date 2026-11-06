@@ -14,5 +14,12 @@
         "psr-4": {
             "Xstache\\": "src/"
         }
+    },
+    "config": {
+        "policy": {
+            "cooldown": {
+                "period": "30 days"
+            }
+        }
     }
 }

@@ -1,0 +1,10 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Xstache\Ast;
+
+interface Keyed
+{
+    public function getKey(): array;
+}

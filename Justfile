@@ -1,4 +1,5 @@
 mod javascript
+mod php
 
 [private]
 list:
@@ -12,8 +13,9 @@ format: javascript::format
 
 license: javascript::license
 
-test: javascript::test
+test: javascript::test php::test
 
-coverage-html: javascript::coverage-html
+coverage-html: javascript::coverage-html php::coverage-html
     @echo "Coverage reports:"
     @echo "- JavaScript:" `just javascript/coverage-index-html`
+    @echo "- PHP:" `just php/coverage-index-htmls`
