@@ -1,4 +1,7 @@
 <?php
+/**
+ * @phan-file-suppress PhanPluginDuplicateAdjacentStatement
+ */
 
 declare(strict_types=1);
 
@@ -14,7 +17,7 @@ class Parse
         $children = self::children($reader);
         if (!$reader->eof()) {
             throw new ParseException(
-                sprintf("Unparsed input (stopped at '%s')", $reader->peek()),
+                sprintf("Unparsed input (stopped at '%s')", $reader->peek() ?? self::EOF),
                 $reader->location(),
             );
         }
@@ -175,7 +178,7 @@ class Parse
         $char = $reader->read();
         if ($char !== '>') {
             throw new ParseException(
-                sprintf("Expected '>', got '%s'", $char),
+                sprintf("Expected '>', got '%s'", $char ?? self::EOF),
                 $location,
             );
         }
@@ -198,10 +201,7 @@ class Parse
                 $value = $variable;
             } else {
                 throw new ParseException(
-                    sprintf(
-                        "Expected variable, got '%s'",
-                        $reader->peek(),
-                    ),
+                    sprintf("Expected variable, got '%s'", $reader->peek() ?? self::EOF),
                     $reader->location(),
                 );
             }
