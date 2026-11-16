@@ -6,5 +6,6 @@ namespace Xstache\Ast;
 
 interface Keyed
 {
+    /** @return KeyNode[] */
     public function getKey(): array;
 }

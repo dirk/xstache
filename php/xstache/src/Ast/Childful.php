@@ -6,5 +6,6 @@ namespace Xstache\Ast;
 
 interface Childful
 {
+    /** @return Child|Child[]|null */
     public function getChildren(): Child|array|null;
 }

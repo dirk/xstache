@@ -28,7 +28,7 @@ class Compile
             'use \\Xstache\\Html\\Runtime as XR;%sreturn function ($context) {%sreturn %s;%s};',
             $indent,
             $this->indent(1),
-            $this->children($node_list->children, 2),
+            $this->children($node_list->getChildren(), 2),
             $indent,
         );
     }
@@ -139,7 +139,7 @@ class Compile
             $this->context(),
             implode(', ', array_map(
                 fn(Ast\KeyNode $part) => var_export($part->value, true),
-                $variable->key,
+                $variable->getKey(),
             )),
         );
     }
