@@ -73,10 +73,7 @@ class Compile
             return $this->variable($child);
 
         } else {
-            throw new LogicException(sprintf(
-                "Unsupported child type '%s'",
-                is_object($child) ? get_class($child) : gettype($child),
-            ));
+            throw new LogicException(sprintf("Unsupported child type '%s'", get_class($child)));
         }
     }
 

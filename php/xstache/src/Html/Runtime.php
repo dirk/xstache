@@ -28,6 +28,7 @@ class Runtime
     }
 
     public static function attributes(
+        /** @phan-suppress-next-line PhanUnusedPublicNoOverrideMethodParameter */
         Context $context,
         array $attributes,
     ): string {
