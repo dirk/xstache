@@ -1,7 +1,7 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "dirk/xstache-laravel",
-    "description": "",
+    "name": "xstache/xstache-laravel",
+    "description": "Use Xstache templates in Laravel",
     "license": "BSD-2-Clause",
     "repositories": [
         {

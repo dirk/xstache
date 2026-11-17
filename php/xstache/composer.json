@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "dirk/xstache",
+    "name": "xstache/xstache",
     "description": "Isomorphic templates for the web",
     "license": "BSD-2-Clause",
     "require": {
@@ -20,7 +20,7 @@
     "config": {
         "policy": {
             "cooldown": {
-                "period": "30 days"
+                "period": "7 days"
             }
         }
     }
