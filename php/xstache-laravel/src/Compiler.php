@@ -11,6 +11,8 @@ use Xstache\Parse;
 
 class Compiler extends BaseCompiler implements CompilerInterface
 {
+    private const PREAMBLE = "<?php\n\n";
+
     private const ALGORITHM = 'md5';
 
     public function compile($path = null)
@@ -21,7 +23,7 @@ class Compiler extends BaseCompiler implements CompilerInterface
 
         $source = $this->files->get($path);
         $node_list = Parse::parse($source);
-        $target = Compile::compile($node_list);
+        $target = self::PREAMBLE . Compile::compile($node_list);
 
         $compiled_path = $this->getCompiledPath($path);
         $this->ensureCompiledDirectoryExists($compiled_path);

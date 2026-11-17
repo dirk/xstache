@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Xstache\Laravel;
 
-use Illuminate\Contracts\View\Engine as EngineContract;
+use Illuminate\Contracts\View\Engine as EngineInterface;
 use Illuminate\Filesystem\Filesystem;
+use Xstache\Html\Context;
 
-class Engine implements EngineContract
+class Engine implements EngineInterface
 {
     public function __construct(
         protected readonly Compiler $compiler,
         protected readonly Filesystem $files,
     ) {
-        throw new \Exception('Not implemented');
     }
 
     /**
@@ -24,6 +24,12 @@ class Engine implements EngineContract
         */
     public function get($path, array $data = [])
     {
-        return '';
+        if ($this->compiler->isExpired($path)) {
+            $this->compiler->compile($path);
+        }
+
+        $compiled_path = $this->compiler->getCompiledPath($path);
+        $template = $this->files->getRequire($compiled_path);
+        return call_user_func($template, new Context($data));
     }
 }
