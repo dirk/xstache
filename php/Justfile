@@ -1,6 +1,6 @@
 set quiet
 
-packages := "xstache"
+packages := `echo xstache*`
 
 [private]
 list:
@@ -8,14 +8,14 @@ list:
 
 test:
     for dir in {{packages}}; do \
-        cd $dir && \
-            ./vendor/bin/phpunit tests; \
+        (cd $dir && \
+            ./vendor/bin/phpunit tests); \
     done
 
 coverage-html:
     for dir in {{packages}}; do \
-        cd $dir && \
-            ./vendor/bin/phpunit --coverage-filter src --coverage-html coverage tests; \
+        (cd $dir && \
+            ./vendor/bin/phpunit --coverage-filter src --coverage-html coverage tests); \
     done
 
 coverage-index-htmls:

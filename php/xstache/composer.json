@@ -1,4 +1,5 @@
 {
+    "$schema": "https://getcomposer.org/schema.json",
     "name": "dirk/xstache",
     "description": "Isomorphic templates for the web",
     "license": "BSD-2-Clause",

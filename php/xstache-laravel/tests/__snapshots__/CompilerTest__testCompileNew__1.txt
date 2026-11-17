@@ -1,0 +1,12 @@
+<?php
+
+use \Xstache\Html\Runtime as XR;
+return function ($context) {
+    return XR::element(
+            $context, 
+            'b', 
+            [], 
+            function ($context) {
+                return 'Hello world!';
+            });
+};

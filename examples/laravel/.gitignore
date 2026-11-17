@@ -1,0 +1,12 @@
+*.log
+.DS_Store
+.env
+.phpunit.result.cache
+Thumbs.db
+/public/build
+/public/fonts-manifest.dev.json
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
