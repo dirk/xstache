@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace Xstache\Laravel;
 
+use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Container\Container;
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\{Artisan, Config, Event, View};
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Symfony\Component\Console\Command\Command;
 
 class ServiceProvider extends BaseServiceProvider
 {
+    public const CONFIG_CACHE_ON_VIEW_CACHE_COMMAND = 'xstache.cache_on_view_cache_command';
+
     public function boot(): void
     {
         $this->registerCompiler();
         $this->registerExtension();
+        $this->registerViewCacheCommand();
     }
 
     public function registerCompiler(): void
@@ -43,5 +48,27 @@ class ServiceProvider extends BaseServiceProvider
                 );
             },
         );
+    }
+
+    public function registerViewCacheCommand(): void
+    {
+        $app = $this->app;
+        if (!$app->runningInConsole()) {
+            return;
+        }
+
+        $this->commands([
+            ViewCacheCommand::class,
+        ]);
+
+        if (Config::get(self::CONFIG_CACHE_ON_VIEW_CACHE_COMMAND, true)) {
+            Event::listen(CommandFinished::class, function (CommandFinished $event) use ($app) {
+                if ($event->command === 'view:cache' && $event->exitCode === Command::SUCCESS) {
+                    ViewCacheCommand::whileCallingFromEvent(
+                        fn() => Artisan::call(ViewCacheCommand::NAME, [], $event->output),
+                    );
+                }
+            });
+        }
     }
 }
