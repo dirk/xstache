@@ -1,6 +1,7 @@
 *.log
 .DS_Store
 .env
+.phpunit.result.cache
 Thumbs.db
 /public/build
 /public/fonts-manifest.dev.json
