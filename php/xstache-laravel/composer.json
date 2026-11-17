@@ -18,7 +18,8 @@
         "phan/phan": "^6.0",
         "php-coveralls/php-coveralls": "^2.6",
         "phpunit/phpunit": ">=7",
-        "spatie/phpunit-snapshot-assertions": "^5"
+        "spatie/phpunit-snapshot-assertions": "^5",
+        "mockery/mockery": "^1.6"
     },
     "autoload": {
         "psr-4": {
