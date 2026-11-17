@@ -17,11 +17,10 @@ class Engine implements EngineInterface
     }
 
     /**
-        *
-        * @param string $path
-        * @param array $data
-        * @return string
-        */
+     * @param string $path
+     * @param array $data
+     * @return string
+     */
     public function get($path, array $data = [])
     {
         if ($this->compiler->isExpired($path)) {
