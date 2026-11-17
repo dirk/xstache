@@ -43,6 +43,7 @@ jobs:
       matrix:
         package:
           - xstache
+          - xstache-laravel
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
