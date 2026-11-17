@@ -16,7 +16,7 @@ class EngineTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    public function testGetExpired()
+    public function testGetExpired(): void
     {
         $engine = new Engine(
             $compiler = Mockery::mock(Compiler::class),
