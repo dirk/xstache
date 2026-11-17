@@ -44,6 +44,7 @@ class ServiceProvider extends BaseServiceProvider
                 $app = Container::getInstance();
                 return new Engine(
                     $app->make('xstache.compiler'),
+                    /** @phan-suppress-next-line PhanTypeMismatchArgument */
                     $app->make('files'),
                 );
             },
@@ -52,8 +53,7 @@ class ServiceProvider extends BaseServiceProvider
 
     public function registerViewCacheCommand(): void
     {
-        $app = $this->app;
-        if (!$app->runningInConsole()) {
+        if (!$this->app->runningInConsole()) {
             return;
         }
 
@@ -62,7 +62,7 @@ class ServiceProvider extends BaseServiceProvider
         ]);
 
         if (Config::get(self::CONFIG_CACHE_ON_VIEW_CACHE_COMMAND, true)) {
-            Event::listen(CommandFinished::class, function (CommandFinished $event) use ($app) {
+            Event::listen(CommandFinished::class, function (CommandFinished $event) {
                 if ($event->command === 'view:cache' && $event->exitCode === Command::SUCCESS) {
                     ViewCacheCommand::whileCallingFromEvent(
                         fn() => Artisan::call(ViewCacheCommand::NAME, [], $event->output),

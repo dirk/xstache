@@ -17,7 +17,7 @@ class Compiler extends BaseCompiler implements CompilerInterface
 
     public function compile($path = null)
     {
-        if (!$path) {
+        if (empty($path)) {
             return;
         }
 

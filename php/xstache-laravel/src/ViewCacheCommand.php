@@ -45,9 +45,13 @@ class ViewCacheCommand extends BladeViewCacheCommand
         $this->paths()->each(function ($path) use ($compiler) {
             $prefix = $this->output->isVeryVerbose() ? '<fg=yellow;options=bold>DIR</> ' : '';
             $output = '';
-            $this->components->task($prefix.$path, function () use ($compiler, $path, &$output) {
-                $output = $this->compilePath($path, $compiler);
-            }, OutputInterface::VERBOSITY_VERBOSE);
+            $this->components->task(
+                $prefix.$path,
+                function () use ($compiler, $path, &$output) {
+                    $output = $this->compilePath($path, $compiler);
+                },
+                OutputInterface::VERBOSITY_VERBOSE,
+            );
 
             if ($this->output->isVeryVerbose()) {
                 $this->output->write($output);
@@ -76,7 +80,10 @@ class ViewCacheCommand extends BladeViewCacheCommand
             ->files();
 
         foreach ($files as $file) {
-            $components->task('    '.$file->getRelativePathname(), fn() => $compiler->compile($file->getRealPath()));
+            $components->task(
+                '    '.$file->getRelativePathname(),
+                fn() => $compiler->compile($file->getRealPath() ?: ''),
+            );
         }
         $output->newLine();
 

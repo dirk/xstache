@@ -246,6 +246,8 @@ return [
         'vendor/php-coveralls/php-coveralls/src',
         'vendor/phpunit/phpunit/src',
         'vendor/spatie/phpunit-snapshot-assertions/src',
+        'vendor/symfony/console',
+        'vendor/symfony/finder',
     ],
 
     // A list of individual files to include in analysis
