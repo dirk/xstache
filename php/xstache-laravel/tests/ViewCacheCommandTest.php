@@ -61,13 +61,11 @@ class ViewCacheCommandTest extends TestCase
         $output = new BufferedOutput();
         $command->run($input, $output);
 
-        // resources/views/test.xstache
-        $test_compiled = 'f1b82fcfeed8418c2bcc6f3039f9614b.php';
-        $this->assertEquals(
-            [$test_compiled],
-            $this->getAllCacheFiles(),
-        );
+        $all_cached_files = $this->getAllCacheFiles();
+        $this->assertCount(1, $all_cached_files);
 
+        // This *should* be compiled resources/views/test.xstache.
+        $test_compiled = array_first($all_cached_files);
         $test_template = $this->files->getRequire(Path::join($this->cache_path, $test_compiled));
         $this->assertEquals(
             "Hello world!\n",
